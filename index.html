@@ -709,6 +709,7 @@ h3.sub { font-size: 17px; font-weight: 600; margin: 48px 0 0; }
   const guess = /^zh/.test(nav) ? 'zh' : /^(ru|kk|ky|uz|be|uk|tg)/.test(nav) ? 'ru' : 'en';
   setLang(fromHash || (TAG[saved] ? saved : guess));
   lbtns.forEach((b) => b.addEventListener('click', () => setLang(b.dataset.l, true)));
+  addEventListener('hashchange', () => { const l = { '#ru': 'ru', '#en': 'en', '#zh': 'zh' }[location.hash]; if (l) setLang(l); });
 
   document.getElementById('copyMail').addEventListener('click', () => {
     const t = document.getElementById('mailAddr').textContent;
@@ -881,6 +882,8 @@ h3.sub { font-size: 17px; font-weight: 600; margin: 48px 0 0; }
   function boot() {
     if (ready) return; ready = true; build(); t0 = performance.now();
     glc.hidden = true;
+    // the name and buttons appear on time even if animation frames are paused (background tab)
+    setTimeout(() => { if (!revealed) { revealed = true; hero.classList.add('revealed'); } }, (T_NAME + .6) * 1000);
     start(false);
   }
   if (pic.complete && pic.naturalWidth) boot(); else { pic.addEventListener('load', boot); pic.addEventListener('error', () => hero.classList.add('revealed')); }
