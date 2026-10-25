@@ -1,0 +1,972 @@
+<!doctype html>
+<html lang="zh-CN" data-lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>html,body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>NVVA OS 女娲</title>
+<meta name="description" content="NVVA OS 女娲：以目标为中心的 AI 原生个人计算架构。AI-native personal computing on Linux.">
+<meta name="theme-color" content="#05060d">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NVVA OS">
+<meta property="og:title" content="NVVA OS 女娲 · AI-native personal computing">
+<meta property="og:description" content="你说出目标，系统负责完成，并用真实证据证明它完成了。You state the goal; the system gets it done and proves it. Вы ставите цель — система выполняет и доказывает.">
+<meta property="og:url" content="https://nvva.ai/">
+<meta property="og:image" content="https://nvva.ai/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="ru_RU">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://nvva.ai/og.jpg">
+<link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="brand/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="brand/icon-180.png">
+<link rel="manifest" href="brand/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="image" href="hero.jpg" fetchpriority="high">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600&family=Comfortaa:wght@300;400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" media="print" id="gfonts">
+<script>(function () { var l = document.getElementById('gfonts'), on = function () { l.media = 'all'; }; if (l.sheet) on(); else l.addEventListener('load', on); })();</script>
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600&family=Comfortaa:wght@300;400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+SC:wght@300;400;500;700&display=swap"></noscript>
+<style>
+/* Layout: cinematic canvas hero (nebula Nüwa + five stones) → a single long dark scroll, each section a "layer" of the five-stone stack */
+:root {
+  color-scheme: dark;
+  --void: #05060d;        /* deep space */
+  --void-2: #0b0e1d;      /* raised surface */
+  --ink: #e9e7f5;         /* primary text, faintly violet */
+  --dim: #9a98b4;         /* secondary text */
+  --line: #23263d;        /* hairlines */
+  --glow: #b9a6ff;        /* accent: nebula violet */
+  --s-qing: #42BBF4;      /* 五色石 · 品牌色：蓝 */
+  --s-chi: #EE354A;       /* 红 */
+  --s-huang: #FFD52E;     /* 黄 */
+  --s-bai: #20B34B;       /* 绿 */
+  --s-hei: #7b3cf0;       /* 紫（#6623DB 在深底上提亮一级） */
+  --display-lat: "Quicksand", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --display-zh: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --body: "IBM Plex Sans", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--void); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.7; }
+:root[data-lang="en"] .zh, :root[data-lang="ru"] .zh { display: none; }
+:root:not([data-lang="en"]) .en, :root:not([data-lang="ru"]) .ru { display: none; }
+:root[data-lang="ru"] { --display-lat: "Comfortaa", "Quicksand", "Segoe UI", system-ui, sans-serif; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--glow); outline-offset: 3px; border-radius: 4px; }
+
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--void); }
+
+/* top bar */
+.bar { position: fixed; top: env(safe-area-inset-top, 0px); left: 0; right: 0; z-index: 40; border-bottom: 1px solid transparent; transition: background .3s, padding .3s, border-color .3s;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding-block: 18px; padding-left: max(24px, env(safe-area-inset-left, 0px)); padding-right: max(24px, env(safe-area-inset-right, 0px)); }
+.brand { font-family: var(--display-lat); letter-spacing: .18em; font-size: 15px; color: var(--ink); text-decoration: none; }
+.brand b { font-family: var(--display-zh); font-weight: 400; letter-spacing: .1em; margin-left: .6em; color: var(--dim); }
+.nav { display: flex; gap: 22px; align-items: center; font-size: 14px; color: var(--dim); }
+.nav a { text-decoration: none; }
+.nav a:hover { color: var(--ink); }
+.lang { font: 500 13px var(--mono); color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; cursor: pointer; }
+.lang:hover { border-color: var(--glow); }
+.links { display: flex; gap: 22px; align-items: center; }
+.nav a.on { color: var(--ink); text-decoration: underline; text-decoration-color: var(--glow); text-decoration-thickness: 1px; text-underline-offset: 7px; }
+.bar.scrolled { background: rgba(5,6,13,.78); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-bottom-color: var(--line); padding-block: 10px; }
+.bar.scrolled .brand img { height: 38px; }
+.brand img { transition: height .3s; }
+.menu { display: none; align-items: center; gap: 8px; font: 500 13px var(--body); color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; cursor: pointer; }
+.menu:hover { border-color: var(--glow); }
+.menu i { display: grid; gap: 3px; } .menu i::before, .menu i::after, .menu i b { content: ""; display: block; width: 13px; height: 1.5px; background: currentColor; border-radius: 1px; }
+@media (max-width: 960px) {
+  .menu { display: inline-flex; }
+  .links { display: none; position: absolute; top: calc(100% + 6px); right: max(16px, env(safe-area-inset-right, 0px)); flex-direction: column; align-items: stretch; gap: 2px;
+    min-width: 190px; padding: 8px; background: rgba(10,11,24,.96); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border: 1px solid var(--line); border-radius: 14px; }
+  .links a { padding: 10px 14px; border-radius: 9px; color: var(--ink); font-size: 15px; }
+  .links a:hover, .links a.on { background: rgba(185,166,255,.12); text-decoration: none; }
+  .bar.open .links { display: flex; }
+}
+section { scroll-margin-top: 64px; }
+.totop { position: fixed; right: max(20px, calc(env(safe-area-inset-right, 0px) + 12px)); bottom: calc(20px + env(safe-area-inset-bottom, 0px)); z-index: 45;
+  width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; color: var(--ink);
+  background: rgba(12,10,30,.72); border: 1px solid rgba(185,166,255,.5); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity .25s, transform .25s, background .2s, border-color .2s; }
+.totop.show { opacity: 1; transform: none; pointer-events: auto; }
+.totop:hover { border-color: var(--glow); background: rgba(185,166,255,.2); }
+
+/* hero */
+.hero { position: relative; height: min(88vh, 860px); min-height: 560px; overflow: hidden; background: var(--void); }
+.hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 40% 45%; max-width: none; }
+.hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+#sky { mix-blend-mode: screen; }
+#trail { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 60; }
+.hero-img.fade-b { -webkit-mask-image: linear-gradient(#000 72%, transparent 99%); mask-image: linear-gradient(#000 72%, transparent 99%); }
+.hero-img.drift { animation: drift 26s ease-in-out infinite alternate; }
+@keyframes drift { from { transform: scale(1); } to { transform: scale(1.04); } }
+.hero::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 46%; z-index: 1; pointer-events: none; background: linear-gradient(rgba(5,6,13,0), rgba(5,6,13,.78) 70%, var(--void)); }
+.hero-copy { position: absolute; left: 0; right: 0; bottom: 7%; z-index: 2; text-align: center; pointer-events: none;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.hero h1 { margin: 0; font-family: var(--display-lat); font-weight: 400; font-size: clamp(44px, 9vw, 112px); letter-spacing: .32em; line-height: 1; padding-left: .32em;
+  opacity: 0; transform: translateY(10px); filter: blur(8px); transition: opacity 1.6s ease, transform 1.6s ease, filter 1.6s ease, letter-spacing 2.4s ease; }
+.hero h1 small { display: block; margin-top: 18px; font-family: var(--display-zh); font-size: .26em; letter-spacing: .6em; color: var(--dim); padding-left: .6em; }
+.hero p.tag { margin: 22px auto 0; max-width: 34ch; color: var(--dim); font-size: clamp(15px, 1.8vw, 18px); opacity: 0; transition: opacity 1.4s ease .6s; }
+.hero.revealed h1 { opacity: 1; transform: none; filter: none; letter-spacing: .22em; }
+.hero.revealed p.tag { opacity: 1; }
+.replay { position: absolute; right: max(24px, env(safe-area-inset-right, 0px)); bottom: 24px; z-index: 3; display: inline-flex; align-items: center; gap: 8px; font: 500 14px var(--body); color: var(--ink); background: rgba(12,10,30,.55); border: 1px solid rgba(185,166,255,.55); border-radius: 999px; padding: 9px 18px 9px 14px; cursor: pointer; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.replay:hover { border-color: var(--glow); background: rgba(185,166,255,.18); }
+
+
+@media (min-width: 900px) {
+  .hero-copy { left: 61%; right: max(32px, env(safe-area-inset-right, 0px)); top: auto; bottom: 10%; text-align: left; padding-left: 0; padding-right: 0; }
+  .hero h1 { font-size: clamp(40px, 4.6vw, 78px); padding-left: 0; }
+  .hero p.tag { max-width: 28ch; }
+  .hero h1 small { padding-left: 0; }
+  .hero p.tag { margin-left: 0; }
+  .hero::after { height: 22%; }
+}
+.hero h1, .hero p.tag { text-shadow: 0 0 30px rgba(5,6,13,.8); }
+
+.brand { display: inline-flex; align-items: center; gap: 12px; }
+.brand img { height: 46px; width: auto; display: block; }
+.brand b { margin-left: 0; font-family: var(--display-zh); font-weight: 300; letter-spacing: .3em; }
+.hero h1 .hero-logo { display: block; width: clamp(250px, 31vw, 470px); height: auto; margin: 0 auto -2%; max-width: 100%; }
+.hero h1 small { font: 300 clamp(14px, 1.35vw, 18px)/1.4 var(--display-zh); letter-spacing: .5em; margin-top: 6px; }
+.hero h1, .hero.revealed h1 { padding-left: 0; }
+@media (max-width: 899px) { .hero-copy { bottom: 13%; } .replay { right: 50%; transform: translateX(50%); bottom: 18px; } }
+@media (min-width: 900px) { .hero-copy { bottom: 6%; left: 62%; } .hero h1 .hero-logo { width: clamp(240px, 27vw, 420px); } }
+.foot-brand { display: inline-flex; align-items: center; gap: 10px; }
+.foot-brand img { height: 26px; width: auto; }
+@media (min-width: 900px) { .hero h1 .hero-logo { margin-left: -3.5%; } }
+/* language switcher */
+.langs { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 2px; gap: 2px; }
+.langs button { font: 500 12px var(--mono); color: var(--dim); background: none; border: 0; border-radius: 999px; padding: 4px 10px; cursor: pointer; }
+.langs button:hover { color: var(--ink); }
+.langs button[aria-pressed="true"] { color: var(--void); background: var(--ink); }
+:root[data-lang="ru"] .links { gap: 16px; }
+:root[data-lang="en"] .hero h1 small, :root[data-lang="ru"] .hero h1 small { font-family: var(--display-lat); letter-spacing: .14em; }
+:root[data-lang="ru"] .hero h1 small { letter-spacing: .06em; }
+.replay { white-space: nowrap; }
+@media (max-width: 480px) { .brand b { display: none; } .langs button { padding: 4px 8px; } }
+/* hero call to action */
+.hero .cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; pointer-events: auto; opacity: 0; transition: opacity 1.2s ease .9s; }
+.hero.revealed .cta { opacity: 1; }
+.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 22px; border-radius: 999px; font: 500 15px var(--body); text-decoration: none; transition: background .2s, border-color .2s, color .2s; }
+.btn.primary { background: var(--ink); color: var(--void); }
+.btn.primary:hover { background: #fff; }
+.btn.ghost { border: 1px solid rgba(233,231,245,.4); color: var(--ink); background: rgba(5,6,13,.35); }
+.btn.ghost:hover { border-color: var(--ink); }
+@media (max-width: 899px) { .hero .cta { justify-content: center; } .replay { top: calc(env(safe-area-inset-top, 0px) + 74px); bottom: auto; right: max(16px, env(safe-area-inset-right, 0px)); transform: none; padding: 7px 14px 7px 11px; font-size: 13px; } }
+@media (min-width: 900px) {
+  .hero { height: clamp(600px, 100vh, 1000px); }
+  .hero-copy { left: 64%; bottom: 5.5%; }
+  .hero h1 .hero-logo { width: clamp(200px, 32vh, 360px); }
+  .hero h1 small { font-size: clamp(12px, 1.7vh, 16px); }
+  .hero p.tag { font-size: clamp(14px, 2vh, 17px); max-width: 34ch; margin-top: 1.6vh; }
+  .hero .cta { margin-top: 2.6vh; }
+}
+.replay { top: calc(env(safe-area-inset-top, 0px) + 84px); bottom: auto; transform: none; }
+@media (max-width: 899px) { .replay { top: calc(env(safe-area-inset-top, 0px) + 74px); } }
+/* engineers' details */
+.dets { margin-top: 40px; border-bottom: 1px solid var(--line); }
+.dets details { border-top: 1px solid var(--line); }
+.dets summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 22px 0; font-size: 18px; font-weight: 600; }
+.dets summary::-webkit-details-marker { display: none; }
+.dets summary::after { content: "+"; flex: none; font: 300 28px/1 var(--display-lat); color: var(--glow); transition: transform .2s; }
+.dets details[open] summary::after { transform: rotate(45deg); }
+.dets summary:hover { color: #fff; }
+.dets .body { padding: 0 0 40px; }
+.dets .body > :first-child { margin-top: 0; }
+.updated { margin: 16px 0 0; font: 13px var(--mono); color: var(--dim); }
+/* sections */
+.wrap { max-width: 1080px; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+section { padding-block: clamp(72px, 11vw, 132px); border-top: 1px solid var(--line); }
+.eyebrow { font: 400 16px var(--display-lat); letter-spacing: .04em; color: var(--glow); margin: 0 0 14px; }
+h2 { font-family: var(--display-zh); font-weight: 400; font-size: clamp(30px, 4.4vw, 48px); line-height: 1.25; margin: 0 0 20px; text-wrap: balance; }
+:root[data-lang="en"] h2 { font-family: var(--display-lat); letter-spacing: .01em; }
+:root[data-lang="ru"] h2 { font-family: var(--display-lat); letter-spacing: .01em; }
+.lede { color: var(--dim); max-width: 62ch; margin: 0; font-size: 17px; }
+
+/* flow comparison */
+.flows { display: grid; gap: 18px; margin-top: 48px; }
+.flow { display: grid; grid-template-columns: 7.5em 1fr; gap: 18px; align-items: baseline; padding: 22px 0; border-bottom: 1px solid var(--line); }
+.flow .who { font: 500 13px var(--mono); color: var(--dim); letter-spacing: .08em; }
+.flow ol { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; min-width: 0; }
+.flow li { font-size: 15px; }
+.flow li + li::before { content: "→"; color: var(--line); margin-right: 10px; }
+.flow.new li { color: var(--ink); }
+.flow.old li { color: var(--dim); }
+.flow.new .who { color: var(--glow); }
+@media (max-width: 560px) { .flow { grid-template-columns: 1fr; gap: 8px; } }
+
+/* five-layer stack */
+.stack { margin-top: 52px; display: grid; gap: 0; border-top: 1px solid var(--line); }
+.layer { display: grid; grid-template-columns: 18px minmax(0, 15em) minmax(0, 1fr); gap: 20px; align-items: start; padding: 22px 0; border-bottom: 1px solid var(--line); }
+.stone { width: 14px; height: 14px; border-radius: 50%; margin-top: 7px; box-shadow: 0 0 14px 2px currentColor; background: currentColor; }
+.layer h3 { margin: 0; font-size: 18px; font-weight: 600; }
+.layer h3 span { display: block; font: 12px var(--mono); color: var(--dim); font-weight: 400; margin-top: 2px; letter-spacing: .04em; }
+.layer p { margin: 0; color: var(--dim); }
+.stack-note { margin-top: 26px; color: var(--dim); font-size: 14px; font-family: var(--display-zh); letter-spacing: .04em; }
+:root[data-lang="en"] .stack-note { font-family: var(--body); font-style: italic; letter-spacing: 0; }
+:root[data-lang="ru"] .stack-note { font-family: var(--body); font-style: italic; letter-spacing: 0; }
+@media (max-width: 640px) { .layer { grid-template-columns: 18px 1fr; } .layer p { grid-column: 2; } }
+
+/* principles + risk ladder */
+.cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px; margin-top: 52px; }
+.cols h3 { font-size: 19px; margin: 0 0 8px; font-weight: 600; }
+.cols p { margin: 0; color: var(--dim); }
+@media (max-width: 820px) { .cols { grid-template-columns: 1fr; gap: 28px; } }
+.risk { margin-top: 56px; overflow-x: auto; }
+.risk table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: 14px; }
+.risk th, .risk td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.risk th { font: 500 12px var(--mono); color: var(--dim); letter-spacing: .1em; text-transform: uppercase; }
+.risk td:first-child { font: 500 14px var(--mono); color: var(--glow); white-space: nowrap; }
+.risk caption { caption-side: top; text-align: left; color: var(--dim); font-size: 14px; padding-bottom: 10px; }
+
+/* pillars */
+.pillars { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); margin-top: 52px; border: 1px solid var(--line); }
+.pillar { background: var(--void); padding: 30px 26px; }
+.pillar .k { font: 500 12px var(--mono); color: var(--glow); letter-spacing: .12em; }
+.pillar h3 { font-family: var(--display-zh); font-weight: 400; font-size: 26px; margin: 12px 0 10px; }
+:root[data-lang="en"] .pillar h3 { font-family: var(--display-lat); font-size: 24px; }
+:root[data-lang="ru"] .pillar h3 { font-family: var(--display-lat); font-size: 24px; }
+.pillar p { margin: 0; color: var(--dim); }
+@media (max-width: 820px) { .pillars { grid-template-columns: 1fr; } }
+
+/* envelope */
+.env { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; align-items: center; margin-top: 8px; }
+.slip { background: var(--void-2); border: 1px solid var(--line); border-radius: 14px; padding: 26px 28px; font: 14px/1.9 var(--mono); }
+.slip .hd { display: flex; justify-content: space-between; color: var(--dim); font-size: 12px; letter-spacing: .1em; margin-bottom: 14px; }
+.slip dl { margin: 0; display: grid; grid-template-columns: 7em 1fr; gap: 2px 14px; }
+.slip dt { color: var(--dim); }
+.slip dd { margin: 0; min-width: 0; }
+.slip .ok { color: var(--s-huang); }
+@media (max-width: 820px) { .env { grid-template-columns: 1fr; gap: 28px; } }
+
+/* refusals */
+.nots { list-style: none; padding: 0; margin: 44px 0 0; display: flex; flex-wrap: wrap; gap: 10px; }
+.nots li { border: 1px solid var(--line); border-radius: 999px; padding: 6px 16px; color: var(--dim); font-size: 14px; }
+
+/* contact + footer */
+.contact { text-align: center; }
+.contact .lede { margin: 0 auto; }
+.mail { display: inline-flex; gap: 10px; align-items: center; margin-top: 28px; font: 500 18px var(--mono); }
+.mail button { font: 12px var(--mono); color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; cursor: pointer; }
+footer { border-top: 1px solid var(--line); padding-block: 28px; color: var(--dim); font-size: 13px; }
+footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+
+
+/* --- added sections --- */
+.lede.small { font-size: 15px; margin-top: 18px; }
+.note { color: var(--dim); font-size: 14px; margin: 22px 0 0; max-width: 70ch; }
+code { font-family: var(--mono); font-size: .92em; color: var(--s-huang); }
+.cols.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 820px) { .cols.two { grid-template-columns: 1fr; } }
+h3.sub { font-size: 17px; font-weight: 600; margin: 48px 0 0; }
+
+.quad { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 48px; }
+.quad div { background: var(--void); padding: 22px 20px; display: grid; gap: 4px; color: var(--dim); }
+.quad b { font-family: var(--display-zh); font-weight: 400; font-size: 28px; color: var(--ink); }
+:root[data-lang="en"] .quad b { font-family: var(--display-lat); font-size: 24px; }
+:root[data-lang="ru"] .quad b { font-family: var(--display-lat); font-size: 24px; }
+@media (max-width: 640px) { .quad { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.chain { list-style: none; margin: 44px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px 8px; align-items: center; font: 500 14px var(--mono); }
+.chain li { color: var(--ink); }
+.chain li:first-child { border: 1px solid var(--glow); border-radius: 8px; padding: 5px 12px; color: var(--glow); }
+.chain li + li::before { content: "→"; color: var(--dim); margin-right: 8px; }
+.chain li.loop { color: var(--glow); }
+
+.ladder { list-style: none; margin: 48px 0 0; padding: 0; display: grid; gap: 0; border-top: 1px solid var(--line); }
+.ladder li { display: grid; grid-template-columns: 3.2em 9.5em minmax(0, 1fr); gap: 16px; align-items: baseline; padding: 16px 0; border-bottom: 1px solid var(--line); color: var(--dim); }
+.ladder .lv { font: 500 15px var(--mono); color: var(--ink); }
+.ladder b { font-weight: 600; color: var(--ink); }
+.ladder li.cur { background: linear-gradient(90deg, rgba(185,166,255,.10), transparent 70%); }
+.ladder li.cur .lv { color: var(--glow); }
+@media (max-width: 600px) { .ladder li { grid-template-columns: 3em 1fr; } .ladder li > span:last-child { grid-column: 2; } }
+
+.keep { margin-top: 44px; border: 1px solid var(--line); border-radius: 14px; padding: 26px 28px; background: var(--void-2); }
+.keep h3 { margin: 0 0 16px; font-size: 18px; font-weight: 600; }
+.keep ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+.keep li { border: 1px solid rgba(255,106,92,.45); color: var(--ink); border-radius: 999px; padding: 6px 16px; font-size: 14px; }
+.keep p { margin: 20px 0 0; color: var(--dim); }
+
+.days { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 44px; }
+.days div { border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; display: grid; gap: 6px; }
+.days .d { font: 500 12px var(--mono); letter-spacing: .12em; color: var(--dim); text-transform: uppercase; }
+.days .eq { font: 500 clamp(20px, 3vw, 28px) var(--mono); }
+.days div:last-child .eq { color: var(--glow); }
+.split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 16px; }
+.split > div { border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px; }
+.split h3 { margin: 0 0 12px; font-size: 16px; font-weight: 600; color: var(--s-qing); }
+.split .fixed h3 { color: var(--s-chi); }
+.split ul, ul.plain { margin: 0; padding-left: 1.1em; color: var(--dim); display: grid; gap: 6px; }
+@media (max-width: 640px) { .days, .split { grid-template-columns: 1fr; } }
+.owned { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; margin-top: 36px; font: 500 15px var(--mono); color: var(--dim); }
+.owned i { font-style: normal; color: var(--line); }
+.owned .hi { color: var(--ink); text-shadow: 0 0 18px var(--glow); }
+
+.ws { background: var(--void-2); border: 1px solid var(--line); border-radius: 16px; padding: 18px; display: grid; gap: 14px; min-width: 0; }
+.ws-hd { display: flex; justify-content: space-between; font: 12px var(--mono); color: var(--dim); letter-spacing: .08em; }
+.ws-g h4 { margin: 0 0 8px; font: 500 12px var(--mono); letter-spacing: .1em; color: var(--dim); text-transform: uppercase; }
+.it { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; font-size: 14px; background: var(--void); }
+.it + .it { margin-top: 6px; }
+.it em { font: normal 12px var(--mono); color: var(--dim); white-space: nowrap; }
+.it.warn { border-color: rgba(255,200,87,.5); }
+.it.warn em { color: var(--s-huang); }
+.it.ok em { color: var(--s-qing); }
+
+.metric-hero { margin-top: 40px; padding: 20px 24px; border-left: 2px solid var(--glow); background: linear-gradient(90deg, rgba(185,166,255,.08), transparent); font-size: clamp(17px, 2vw, 20px); }
+
+.scen { list-style: none; counter-reset: s; margin: 20px 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; }
+.scen li { counter-increment: s; display: grid; grid-template-columns: 2.2em minmax(0, 1fr); gap: 2px 10px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.scen li::before { content: counter(s, decimal-leading-zero); font: 500 13px var(--mono); color: var(--dim); grid-row: span 2; padding-top: 2px; }
+.scen b { font-weight: 600; font-size: 15px; }
+.scen li > span { color: var(--dim); font-size: 14px; }
+.scen li.safe::before { color: var(--s-chi); }
+@media (max-width: 720px) { .scen { grid-template-columns: 1fr; } }
+.exit { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 40px; }
+.exit div { background: var(--void); padding: 22px 20px; display: grid; gap: 6px; align-content: start; }
+.exit b { font: 500 26px var(--mono); color: var(--glow); }
+.exit span { color: var(--dim); font-size: 14px; }
+@media (max-width: 820px) { .exit { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* roadmap: vertical timeline with each phase's question */
+.road { list-style: none; margin: 48px 0 0 5px; padding: 0; border-left: 1px solid var(--line); display: grid; gap: 0; }
+.road li { position: relative; padding: 0 0 30px 28px; }
+.road li::before { content: ""; position: absolute; top: 5px; left: -5px; width: 9px; height: 9px; border-radius: 50%; background: var(--void); border: 1px solid var(--dim); }
+.road li.now::before { background: var(--glow); border-color: var(--glow); box-shadow: 0 0 12px var(--glow); }
+.road .p { font: 500 12px var(--mono); color: var(--dim); display: flex; gap: 10px; align-items: center; }
+.road li.now .p { color: var(--glow); }
+.road h3 { font-size: 18px; font-weight: 600; margin: 4px 0 4px; }
+.road p { margin: 0; color: var(--dim); max-width: 62ch; }
+.road .st { font: 11px var(--mono); color: var(--void); background: var(--glow); border-radius: 999px; padding: 1px 8px; }
+
+.final { text-align: center; background: radial-gradient(ellipse at 50% 120%, rgba(143,107,255,.18), transparent 60%); }
+.arc { list-style: none; margin: 20px auto 0; padding: 0; display: grid; gap: 12px; max-width: 40ch; font-family: var(--display-zh); font-size: clamp(18px, 2.4vw, 24px); }
+:root[data-lang="en"] .arc { font-family: var(--display-lat); }
+:root[data-lang="ru"] .arc { font-family: var(--display-lat); }
+.arc li { color: var(--dim); }
+.arc li:nth-child(3), .arc li:nth-child(4) { color: var(--ink); }
+.motto { margin: 48px auto 0; max-width: 60ch; font: 15px/2 var(--mono); color: var(--dim); }
+.motto i { font-style: normal; color: var(--glow); margin: 0 4px; }
+.motto b { color: var(--ink); font-weight: 500; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .hero h1, .hero p.tag { transition: none; }
+}
+</style>
+</head>
+<body>
+<header class="bar">
+  <a class="brand" href="#top"><img src="brand/nvva-logo-dark.svg" width="1280" height="440" alt="NVVA OS"><b>女娲</b></a>
+  <nav class="nav" aria-label="主导航 / Main">
+    <div class="links" id="navLinks">
+    <a href="#idea"><span class="zh">理念</span><span class="en">Idea</span><span class="ru">Идея</span></a>
+    <a href="#coffee"><span class="zh">体验</span><span class="en">In practice</span><span class="ru">На практике</span></a>
+    <a href="#layers"><span class="zh">架构</span><span class="en">Architecture</span><span class="ru">Архитектура</span></a>
+    <a href="#evolution"><span class="zh">个人进化</span><span class="en">Evolution</span><span class="ru">Эволюция</span></a>
+    <a href="#progress"><span class="zh">进展</span><span class="en">Progress</span><span class="ru">Прогресс</span></a>
+    <a href="#contact"><span class="zh">联系</span><span class="en">Contact</span><span class="ru">Контакты</span></a>
+    </div>
+    <button class="menu" id="menuBtn" type="button" aria-expanded="false" aria-controls="navLinks"><i><b></b></i><span class="zh">目录</span><span class="en">Menu</span><span class="ru">Меню</span></button>
+    <div class="langs" role="group" aria-label="语言 / Language / Язык"><button type="button" data-l="zh" lang="zh-CN">中</button><button type="button" data-l="en" lang="en">EN</button><button type="button" data-l="ru" lang="ru">RU</button></div>
+  </nav>
+</header>
+
+<div class="hero" id="top">
+  <img class="hero-img" id="heroImg" src="hero.jpg" width="1672" height="941" alt="由星云构成的东方女性，凝视掌心的微光 / A woman woven from nebulae, gazing at the light in her palm / Женщина из туманностей смотрит на свет в своей ладони">
+  <canvas id="neb" aria-hidden="true"></canvas>
+  <canvas id="sky" aria-hidden="true"></canvas>
+  <canvas id="gem" aria-hidden="true"></canvas>
+  <div class="hero-copy">
+    <h1><img class="hero-logo" src="brand/nvva-logo-dark.svg" width="1280" height="440" alt="NVVA OS"><small><span class="zh">女娲 · AI 原生个人计算</span><span class="en">Nüwa · AI-native personal computing</span><span class="ru">Нюйва · ИИ-нативные вычисления</span></small></h1>
+    <p class="tag"><span class="zh">你说出目标，系统负责完成，并用真实证据证明它完成了。</span><span class="en">You state the goal. The system gets it done, and proves it with real evidence.</span><span class="ru">Вы ставите цель. Система её выполняет и подтверждает реальными доказательствами.</span></p>
+    <div class="cta"><a class="btn primary" href="#contact"><span class="zh">申请早期体验</span><span class="en">Request early access</span><span class="ru">Запросить ранний доступ</span></a><a class="btn ghost" href="#name"><span class="zh">了解更多</span><span class="en">Learn more</span><span class="ru">Подробнее</span></a></div>
+  </div>
+  <button class="replay" id="replay" type="button"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4 2.5v11l9-5.5z" fill="currentColor"/></svg><span class="zh">重播</span><span class="en">Replay</span><span class="ru">Повторить</span></button>
+</div>
+
+<main>
+<section id="name">
+  <div class="wrap">
+    <p class="eyebrow"><span class="zh">为什么是女娲</span><span class="en">Why "NVVA"</span><span class="ru">Почему «NVVA»</span></p>
+    <h2><span class="zh">我们在创造一种新的智能</span><span class="en">We are creating a new kind of intelligence</span><span class="ru">Мы создаём новый вид интеллекта</span></h2>
+    <p class="lede"><span class="zh">女娲，是中国人最熟悉的"造人者"。我们用这个名字，是因为我们正在做一件相似的事：人类第一次开始创造能理解语言、会推理、能行动、会学习的智能。</span><span class="en">In Chinese culture, Nüwa is the one who first shaped humankind. We took her name because we are attempting something similar: for the first time, people are creating intelligence that can understand language, reason, act and learn.</span><span class="ru">В китайской культуре Нюйва — та, что первой создала людей. Мы взяли её имя, потому что пытаемся сделать нечто похожее: впервые люди создают интеллект, который понимает язык, рассуждает, действует и учится.</span></p>
+    <p class="lede" style="margin-top:18px"><span class="zh">女娲 OS 不是又一个软件，而是这种新智能在你电脑里的家。它理解你的目标，记住你做事的方式，替你把事情办完，并在长期相处中，长成最适合你的样子。</span><span class="en">NVVA OS is not another piece of software. It is a home for this new intelligence on your computer. It understands your goals, remembers how you work, gets things done for you, and over time grows into the shape that suits you best.</span><span class="ru">NVVA OS — это не очередная программа. Это дом для нового интеллекта на вашем компьютере. Он понимает ваши цели, запоминает, как вы работаете, доводит дела до конца и со временем становится именно таким, каким нужен вам.</span></p>
+    <div class="quad">
+      <div><b><span class="zh">理解</span><span class="en">Understands</span><span class="ru">Понимает</span></b><span class="zh">听懂你想要什么，而不只是执行命令</span><span class="en">what you want, not just what you type</span><span class="ru">чего вы хотите, а не только что вы ввели</span></div>
+      <div><b><span class="zh">行动</span><span class="en">Acts</span><span class="ru">Действует</span></b><span class="zh">在你给的权限里，把事情真正办完</span><span class="en">and finishes the job, within the permissions you grant</span><span class="ru">и доводит дело до конца в пределах ваших разрешений</span></div>
+      <div><b><span class="zh">成长</span><span class="en">Grows</span><span class="ru">Растёт</span></b><span class="zh">用得越久，越懂你的习惯和偏好</span><span class="en">the longer you use it, the better it knows you</span><span class="ru">чем дольше вы им пользуетесь, тем лучше он вас знает</span></div>
+      <div><b><span class="zh">可控</span><span class="en">Stays bounded</span><span class="ru">Остаётся в рамках</span></b><span class="zh">越来越能干，但最终决定权永远在你</span><span class="en">ever more capable, but the final say is always yours</span><span class="ru">всё более способный, но последнее слово всегда за вами</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="idea">
+  <div class="wrap">
+    <p class="eyebrow"><span class="zh">以目标为中心的计算</span><span class="en">Goal-centric computing</span><span class="ru">Вычисления вокруг целей</span></p>
+    <h2><span class="zh">今天，人仍在学习如何操作计算机</span><span class="en">Today, people still learn to operate computers</span><span class="ru">Сегодня люди всё ещё учатся управлять компьютером</span></h2>
+    <p class="lede"><span class="zh">你说"把这个项目跑起来，确认它正常工作"，真正的目标只有一个。但传统计算要你自己决定用什么软件、走哪些步骤、怎么处理报错。图形界面把"记命令"变成了"找按钮"，却没有消除操作，因为它诞生时，计算机还不能理解"我想完成什么"。现在它开始能理解了。</span><span class="en">You say "get this project running and make sure it works". There is one real goal. Yet today's computing makes you choose the software, the steps and the fixes. The GUI turned memorising commands into finding buttons, but it never removed the operating, because when it was invented computers could not understand what you wanted. Now they are starting to.</span><span class="ru">Вы говорите: «Запусти этот проект и убедись, что он работает». Цель одна. Но современные компьютеры заставляют вас самих выбирать программы, шаги и способы исправить ошибки. Графический интерфейс заменил заучивание команд поиском кнопок, но не избавил от самого управления: когда его придумали, компьютеры не понимали, чего вы хотите. Теперь они начинают понимать.</span></p>
+    <div class="flows">
+      <div class="flow old"><div class="who"><span class="zh">传统计算</span><span class="en">Today</span><span class="ru">Сегодня</span></div>
+        <ol><li><span class="zh">学习软件</span><span class="en">Learn the software</span><span class="ru">Изучить программу</span></li><li><span class="zh">操作应用</span><span class="en">Operate the app</span><span class="ru">Работать в приложении</span></li><li><span class="zh">逐步执行</span><span class="en">Do each step</span><span class="ru">Пройти каждый шаг</span></li><li><span class="zh">自己排错</span><span class="en">Fix the errors</span><span class="ru">Исправить ошибки</span></li><li><span class="zh">得到结果</span><span class="en">Result</span><span class="ru">Результат</span></li></ol></div>
+      <div class="flow new"><div class="who">NVVA OS</div>
+        <ol><li><span class="zh">说出目标</span><span class="en">State the goal</span><span class="ru">Поставить цель</span></li><li><span class="zh">AI 理解与规划</span><span class="en">AI plans</span><span class="ru">ИИ планирует</span></li><li><span class="zh">在授权内执行</span><span class="en">Runs within your permission</span><span class="ru">Выполнение в рамках разрешений</span></li><li><span class="zh">真实验证</span><span class="en">Verified for real</span><span class="ru">Реальная проверка</span></li><li><span class="zh">完成</span><span class="en">Done</span><span class="ru">Готово</span></li></ol></div>
+    </div>
+    <div class="cols two">
+      <div><h3><span class="zh">你先想的不再是"打开哪个软件"</span><span class="en">Not "which app do I open"</span><span class="ru">Не «какую программу открыть»</span></h3><p><span class="zh">而是"我要完成什么"。在应用、窗口、文件、进程之上，女娲 OS 引入目标、任务、上下文、动作、策略、记忆和验证，作为计算的一级对象。</span><span class="en">but "what do I want done". On top of apps, windows, files and processes, NVVA OS makes goals, tasks, context, actions, policy, memory and verification first-class objects of computing.</span><span class="ru">а «что я хочу сделать». Поверх приложений, окон, файлов и процессов NVVA OS делает основными объектами вычислений цели, задачи, контекст, действия, политики, память и проверку.</span></p></div>
+      <div><h3><span class="zh">应用不会消失</span><span class="en">Apps don't disappear</span><span class="ru">Приложения не исчезнут</span></h3><p><span class="zh">浏览器、Office、IDE、Photoshop、终端都还在。它们从主要由人直接操作的对象，变成系统完成目标时可以调用的能力。</span><span class="en">Browsers, Office, IDEs, Photoshop and the terminal all stay. They shift from things you operate by hand to capabilities the system calls on to reach your goal.</span><span class="ru">Браузеры, Office, среды разработки, Photoshop и терминал остаются. Из того, чем вы управляете вручную, они превращаются в возможности, к которым система обращается ради вашей цели.</span></p></div>
+    </div>
+  </div>
+</section>
+
+<section id="coffee">
+  <div class="wrap env">
+    <div>
+      <p class="eyebrow"><span class="zh">授权边界</span><span class="en">Autonomy envelope</span><span class="ru">Границы автономии</span></p>
+      <h2><span class="zh">"给我订杯咖啡"</span><span class="en">"Get me a coffee"</span><span class="ru">«Закажи мне кофе»</span></h2>
+      <p class="lede"><span class="zh">如果系统反复问你商家、口味、地址和付款，你仍然在管理操作，只是按钮换成了"允许"。当你画好授权边界，系统理解偏好、检查预算、选店、下单、支付、跟踪配送，最后告诉你"咖啡还有 3 分钟送到"。重要的不是咖啡，而是你交出去的是一个完整的目标，而不是一串操作。</span><span class="en">If the system keeps asking about the shop, the drink, the address and payment, you are still managing steps, just through "Allow" buttons. Once you've drawn the boundary, it learns your taste, checks the budget, picks the shop, orders, pays, tracks delivery and tells you "your coffee is 3 minutes away". The point isn't the coffee. It's that you handed over a whole goal, not a string of steps.</span><span class="ru">Если система снова и снова спрашивает о кафе, напитке, адресе и оплате, вы всё ещё управляете шагами — просто через кнопки «Разрешить». Когда вы задали границы, она учитывает ваш вкус, проверяет бюджет, выбирает кафе, заказывает, оплачивает, следит за доставкой и сообщает: «кофе будет через 3 минуты». Суть не в кофе, а в том, что вы передали целую цель, а не цепочку шагов.</span></p>
+      <p class="lede small"><span class="zh">女娲 OS 不追求永远不问你，而是最小必要的人工干预：价格异常、地址变化、目标有歧义时，问你才是对的。</span><span class="en">NVVA OS doesn't aim to never ask. It aims for the minimum necessary intervention: when the price looks wrong, the address changes or the goal is ambiguous, asking is the right thing to do.</span><span class="ru">NVVA OS не стремится никогда не спрашивать. Цель — минимально необходимое вмешательство: если цена выглядит странно, адрес изменился или цель неясна, правильно спросить.</span></p>
+    </div>
+    <div class="slip" aria-label="授权边界示例 / Example permission boundary">
+      <div class="hd"><span>GRANT · <span class="zh">示例</span><span class="en">EXAMPLE</span><span class="ru">ПРИМЕР</span></span><span class="ok">A3 · R2</span></div>
+      <dl>
+        <dt><span class="zh">能力</span><span class="en">Capability</span><span class="ru">Возможность</span></dt><dd><span class="zh">外卖下单与支付</span><span class="en">Order and pay for delivery</span><span class="ru">Заказ и оплата доставки</span></dd>
+        <dt><span class="zh">范围</span><span class="en">Scope</span><span class="ru">Область</span></dt><dd><span class="zh">常用的三家咖啡店</span><span class="en">Three usual coffee shops</span><span class="ru">Три привычные кофейни</span></dd>
+        <dt><span class="zh">预算</span><span class="en">Budget</span><span class="ru">Бюджет</span></dt><dd><span class="zh">单笔 ≤ 50 元，每天 ≤ 2 单</span><span class="en">≤ ¥50 per order, ≤ 2 a day</span><span class="ru">≤ 2 500 ₸ за заказ, не более 2 в день</span></dd>
+        <dt><span class="zh">地址</span><span class="en">Address</span><span class="ru">Адрес</span></dt><dd><span class="zh">仅限公司地址</span><span class="en">Office address only</span><span class="ru">Только адрес офиса</span></dd>
+        <dt><span class="zh">有效期</span><span class="en">Valid</span><span class="ru">Срок</span></dt><dd><span class="zh">工作日 9:00–18:00，可随时撤销</span><span class="en">Weekdays 9:00–18:00, revocable</span><span class="ru">Будни 9:00–18:00, можно отозвать</span></dd>
+        <dt><span class="zh">超出范围</span><span class="en">Otherwise</span><span class="ru">Иначе</span></dt><dd class="ok"><span class="zh">先问我</span><span class="en">Ask me first</span><span class="ru">Сначала спросить меня</span></dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section id="layers">
+  <div class="wrap">
+    <p class="eyebrow"><span class="zh">五层结构</span><span class="en">Five layers</span><span class="ru">Пять уровней</span></p>
+    <h2><span class="zh">AI 是认知层，不是最高权力</span><span class="en">AI is the cognition layer, not the highest authority</span><span class="ru">ИИ — это уровень мышления, а не высшая власть</span></h2>
+    <p class="lede"><span class="zh">女娲 OS 不是"大模型直连 Shell 再到 Linux"。AI 是概率系统，会理解错、会幻觉、会选错工具、会误判完成，所以智能和控制必须分开：AI 负责想，确定性系统负责管。</span><span class="en">NVVA OS is not "an LLM wired to a shell on Linux". AI is probabilistic: it can misread, hallucinate, pick the wrong tool or think it's finished when it isn't. So intelligence and control are separated: AI does the thinking, deterministic systems hold the keys.</span><span class="ru">NVVA OS — это не «языковая модель, подключённая к командной строке Linux». ИИ вероятностен: он может неверно понять, галлюцинировать, выбрать не тот инструмент или решить, что закончил, когда это не так. Поэтому интеллект и контроль разделены: ИИ думает, а ключи держат детерминированные системы.</span></p>
+    <div class="stack">
+      <div class="layer"><i class="stone" style="color:var(--s-huang)"></i><h3><span class="zh">人</span><span class="en">You</span><span class="ru">Вы</span><span>Human</span></h3><p><span class="zh">定义目标、做价值判断、授权与撤销。你从"操作员"变成目标的设定者、决策者和最终权威。</span><span class="en">Set goals, make the judgment calls, grant and revoke permission. You move from operator to goal setter, decision maker and final authority.</span><span class="ru">Ставите цели, принимаете решения, выдаёте и отзываете разрешения. Из оператора вы становитесь тем, кто задаёт цели, принимает решения и обладает последним словом.</span></p></div>
+      <div class="layer"><i class="stone" style="color:var(--s-qing)"></i><h3><span class="zh">AI 认知层</span><span class="en">AI cognition</span><span class="ru">Мышление ИИ</span><span>Cognitive Layer</span></h3><p><span class="zh">理解意图、拆解任务、规划步骤，失败后诊断并重新规划。它只提出方案，不拥有任何权限。</span><span class="en">Understands intent, breaks work down, plans, and replans after failure. It proposes; it holds no permissions at all.</span><span class="ru">Понимает намерение, разбивает работу на части, планирует и перестраивает план после неудачи. Он только предлагает; никаких прав у него нет.</span></p></div>
+      <div class="layer"><i class="stone" style="color:var(--s-chi)"></i><h3><span class="zh">确定性控制平面</span><span class="en">Control plane</span><span class="ru">Плоскость управления</span><span>Deterministic Control Plane</span></h3><p><span class="zh">策略、状态、调度、预算、审计、验证与恢复。每一个有副作用的操作都要经过它，并写进带哈希链、可检测篡改的审计记录。</span><span class="en">Policy, state, scheduling, budgets, audit, verification and recovery. Every action with a side effect goes through it and is written to a hash-chained, tamper-evident audit log.</span><span class="ru">Политики, состояние, планирование, бюджеты, аудит, проверка и восстановление. Каждое действие с побочным эффектом проходит через неё и записывается в защищённый от подделки журнал аудита с хеш-цепочкой.</span></p></div>
+      <div class="layer"><i class="stone" style="color:var(--s-hei)"></i><h3>Linux<span>Infrastructure</span></h3><p><span class="zh">成熟的内核、驱动、文件系统和网络。命名空间、cgroups、seccomp、Landlock 正好提供约束 AI 行动所需的隔离、限额和权限原语。AI 的操作默认不以 root 运行。</span><span class="en">A mature kernel, drivers, filesystems and networking. Namespaces, cgroups, seccomp and Landlock supply exactly the isolation, limits and permission primitives needed to constrain an AI's actions. AI actions never run as root by default.</span><span class="ru">Зрелое ядро, драйверы, файловые системы и сеть. Пространства имён, cgroups, seccomp и Landlock дают ровно те механизмы изоляции, ограничений и прав, которые нужны, чтобы сдерживать действия ИИ. По умолчанию действия ИИ никогда не выполняются от root.</span></p></div>
+      <div class="layer"><i class="stone" style="color:var(--s-bai)"></i><h3><span class="zh">真实世界</span><span class="en">Reality</span><span class="ru">Реальность</span><span>Evidence</span></h3><p><span class="zh">"部署成功"要由进程、端口、HTTP 响应和健康检查来证明，不由模型来宣布。</span><span class="en">"Deployed" is proven by processes, ports, HTTP responses and health checks, never announced by the model.</span><span class="ru">«Развёрнуто» доказывают процессы, порты, HTTP-ответы и проверки работоспособности, а не слова модели.</span></p></div>
+    </div>
+    <p class="stack-note"><span class="zh">五层各司其职：让一种会犯错的智能，始终在可靠的边界里做事。</span><span class="en">Five layers, one purpose: a fallible intelligence that always works inside reliable bounds.</span><span class="ru">Пять уровней, одна цель: интеллект, который может ошибаться, всегда работает в надёжных рамках.</span></p>
+  </div>
+</section>
+
+<section id="trust">
+  <div class="wrap">
+    <p class="eyebrow"><span class="zh">事实与安全</span><span class="en">Truth and safety</span><span class="ru">Истина и безопасность</span></p>
+    <h2><span class="zh">在需要智能的地方用 AI，在需要可靠的地方用确定性系统</span><span class="en">AI where intelligence is needed, deterministic code where reliability is</span><span class="ru">ИИ там, где нужен интеллект, детерминированный код там, где нужна надёжность</span></h2>
+    <div class="cols">
+      <div><h3><span class="zh">模型不是事实</span><span class="en">The model is not the truth</span><span class="ru">Модель — не источник истины</span></h3><p><span class="zh">事实来自事件日志和真实环境。模型输出不等于系统事实，证据说了才算。</span><span class="en">Facts come from the event log and the real environment. Model output is not system truth; only evidence counts.</span><span class="ru">Факты берутся из журнала событий и реальной среды. Ответ модели — не истина для системы; значение имеют только доказательства.</span></p></div>
+      <div><h3><span class="zh">不是什么都需要 AI</span><span class="en">Not everything needs AI</span><span class="ru">Не всё требует ИИ</span></h3><p><span class="zh">HTTP 状态码、文件是否存在、SHA-256 校验，这些用确定性代码就能回答。AI 留给语义、推理、规划和异常分析。</span><span class="en">An HTTP status, whether a file exists, a SHA-256 check: plain code answers these. AI is kept for meaning, reasoning, planning and diagnosing the unexpected.</span><span class="ru">Код HTTP-ответа, наличие файла, проверка SHA-256 — на это отвечает обычный код. ИИ нужен для смысла, рассуждений, планирования и разбора неожиданного.</span></p></div>
+      <div><h3><span class="zh">不可信的内容只是数据</span><span class="en">Untrusted content is only data</span><span class="ru">Ненадёжный контент — это только данные</span></h3><p><span class="zh">网页、邮件、项目说明里可能藏着写给 AI 的恶意指令。女娲 OS 不靠"让模型别上当"，而是在架构上把外部内容一律当数据；权限和网络边界在模型之外强制执行。即使模型被误导，也越不过控制平面。</span><span class="en">Web pages, emails and READMEs can hide instructions aimed at the AI. NVVA OS does not rely on the model "not falling for it". External content is always treated as data, and permissions and network limits are enforced outside the model. Even a misled model cannot get past the control plane.</span><span class="ru">Веб-страницы, письма и файлы README могут скрывать инструкции, адресованные ИИ. NVVA OS не полагается на то, что модель «не попадётся». Внешний контент всегда считается данными, а права и сетевые ограничения применяются вне модели. Даже обманутая модель не сможет обойти плоскость управления.</span></p></div>
+    </div>
+  </div>
+</section>
+
+<section id="control">
+  <div class="wrap">
+    <p class="eyebrow"><span class="zh">高自主 ≠ 失控</span><span class="en">High autonomy ≠ no control</span><span class="ru">Высокая автономия ≠ потеря контроля</span></p>
+    <h2><span class="zh">自主权再高，也不会失控</span><span class="en">However much autonomy, never out of control</span><span class="ru">Сколько бы автономии ни было — без потери контроля</span></h2>
+    <p class="lede"><span class="zh">即使在高度自主的环境里，状态、审计、预算、监控、验证、恢复和紧急停止依然全部生效。更高的行动权限，从来不意味着可以绕过控制平面。</span><span class="en">Even at high autonomy, state, audit, budgets, monitoring, verification, recovery and the kill switch all stay in force. More authority to act never means bypassing the control plane.</span><span class="ru">Даже при высокой автономии состояние, аудит, бюджеты, мониторинг, проверка, восстановление и аварийная остановка остаются в силе. Больше полномочий на действия никогда не означает обхода плоскости управления.</span></p>
+    <div class="keep">
+      <h3><span class="zh">这些权力永远不会交给 AI</span><span class="en">Powers never handed to the AI</span><span class="ru">Полномочия, которые никогда не передаются ИИ</span></h3>
+      <ul>
+        <li><span class="zh">修改授权与策略本身</span><span class="en">Changing grants or policy</span><span class="ru">Изменение разрешений и политик</span></li>
+        <li><span class="zh">修改审计记录</span><span class="en">Editing the audit record</span><span class="ru">Правка журнала аудита</span></li>
+        <li><span class="zh">修改女娲 OS 自身</span><span class="en">Modifying NVVA OS itself</span><span class="ru">Изменение самой NVVA OS</span></li>
+        <li><span class="zh">读取凭据明文</span><span class="en">Reading secrets in plain text</span><span class="ru">Чтение секретов в открытом виде</span></li>
+        <li><span class="zh">代替你做出批准</span><span class="en">Approving on your behalf</span><span class="ru">Одобрение от вашего имени</span></li>
+      </ul>
+      <p><span class="zh">一条命令 <code>nvva stop</code>，2 秒内终止所有正在执行的操作。</span><span class="en">One command, <code>nvva stop</code>, ends every running action within 2 seconds.</span><span class="ru">Одна команда, <code>nvva stop</code>, останавливает все действия в течение 2 секунд.</span></p>
+    </div>
+  </div>
+</section>
+
+<section id="evolution">
+  <div class="wrap">
+    <p class="eyebrow"><span class="zh">个人"进化"</span><span class="en">Personal "evolution"</span><span class="ru">Персональная «эволюция»</span></p>
+    <h2><span class="zh">两套相同的系统，会长成不同的样子</span><span class="en">Two identical systems grow apart</span><span class="ru">Две одинаковые системы становятся разными</span></h2>
+    <p class="lede"><span class="zh">传统电脑的"个人"，意思是"这台电脑属于你"。在女娲 OS 里，它还意味着"这个计算环境越来越适合你"。系统根据你的目标、决定、偏好、记忆和反馈，在安全边界内持续调整对你的理解和做事的方式。这里的"进化"不是生物进化，也不是无边界的自我修改。</span><span class="en">On a classic PC, "personal" means "this computer belongs to you". In NVVA OS it also means "this environment keeps fitting you better". From your goals, decisions, preferences, memory and feedback, the system keeps adjusting how it understands you and how it works, inside safety bounds. This "evolution" is not biological, and it is not unbounded self-modification.</span><span class="ru">У обычного ПК «персональный» значит «этот компьютер принадлежит вам». В NVVA OS это значит ещё и «эта среда всё лучше подходит вам». По вашим целям, решениям, предпочтениям, памяти и отзывам система постоянно уточняет, как она вас понимает и как работает, — в пределах безопасных рамок. Эта «эволюция» не биологическая и не безграничное самоизменение.</span></p>
+    <div class="days">
+      <div><span class="d">Day 1</span><span class="eq">NVVA A ≈ NVVA B</span></div>
+      <div><span class="d"><span class="zh">长期使用后</span><span class="en">After long use</span><span class="ru">После долгого использования</span></span><span class="eq">NVVA A ≠ NVVA B</span></div>
+    </div>
+    <div class="split">
+      <div><h3><span class="zh">可以持续适应</span><span class="en">Keeps adapting</span><span class="ru">Продолжает адаптироваться</span></h3>
+        <ul><li><span class="zh">偏好与交互风格</span><span class="en">Preferences and interaction style</span><span class="ru">Предпочтения и стиль общения</span></li><li><span class="zh">上下文与记忆</span><span class="en">Context and memory</span><span class="ru">Контекст и память</span></li><li><span class="zh">工作流与规划策略</span><span class="en">Workflows and planning strategy</span><span class="ru">Рабочие процессы и стратегия планирования</span></li><li><span class="zh">工具偏好</span><span class="en">Tool preferences</span><span class="ru">Предпочтения в инструментах</span></li><li><span class="zh">何时、如何提醒你</span><span class="en">When and how to notify you</span><span class="ru">Когда и как вас уведомлять</span></li></ul></div>
+      <div class="fixed"><h3><span class="zh">永远不会擅自改变</span><span class="en">Never changes on its own</span><span class="ru">Никогда не меняется само</span></h3>
+        <ul><li><span class="zh">系统事实</span><span class="en">System truth</span><span class="ru">Истина системы</span></li><li><span class="zh">安全边界与关键策略</span><span class="en">Security bounds and critical policy</span><span class="ru">Границы безопасности и ключевые политики</span></li><li><span class="zh">你的明确授权</span><span class="en">Your explicit permissions</span><span class="ru">Ваши явные разрешения</span></li><li><span class="zh">身份、审计与验证要求</span><span class="en">Identity, audit and verification rules</span><span class="ru">Правила идентификации, аудита и проверки</span></li><li><span class="zh">人的最终决定权</span><span class="en">Human final authority</span><span class="ru">Последнее слово за человеком</span></li></ul></div>
+    </div>
+    <p class="note"><span class="zh">越来越懂你，不等于越来越大的权力。记忆都带来源、时间、可信度和有效期，你可以查看、修改、删除或关闭。数据属于你。</span><span class="en">Knowing you better never means more power. Every memory carries its source, time, confidence and expiry, and you can view, edit, delete or switch it off. Your data is yours.</span><span class="ru">Знать вас лучше не значит иметь больше власти. У каждой записи памяти есть источник, время, степень уверенности и срок действия; вы можете просмотреть, изменить, удалить или отключить её. Ваши данные принадлежат вам.</span></p>
+    <div class="owned"><span>Owned by You</span><i>→</i><span>Adapted to You</span><i>→</i><span class="hi">Evolved with You</span></div>
+  </div>
+</section>
+
+<section id="workspace">
+  <div class="wrap env">
+    <div>
+      <p class="eyebrow"><span class="zh">从桌面到工作区</span><span class="en">From desktop to workspace</span><span class="ru">От рабочего стола к рабочему пространству</span></p>
+      <h2><span class="zh">问题从"我能打开什么"，变成"我的事进行到哪了"</span><span class="en">From "what can I open?" to "where are my things at?"</span><span class="ru">От «что я могу открыть?» к «как продвигаются мои дела?»</span></h2>
+      <p class="lede"><span class="zh">传统桌面首先展示应用、图标和窗口。以目标为中心的工作区首先展示进行中的目标、需要你决定的事、昨晚完成了什么。在明确授权内，系统还能处理后台、定时和条件触发的任务，从被动等你操作，变成持续推进你的目标。</span><span class="en">A classic desktop shows apps, icons and windows first. A goal-centric workspace shows active goals, what needs your decision and what finished overnight. Within clear permissions it also handles background, scheduled and event-driven work, moving from waiting for your clicks to steadily advancing your goals.</span><span class="ru">Обычный рабочий стол показывает приложения, значки и окна. Рабочее пространство, построенное вокруг целей, показывает активные цели, что ждёт вашего решения и что было сделано за ночь. В рамках чётких разрешений оно берёт на себя фоновые, плановые и событийные задачи, переходя от ожидания ваших щелчков к постоянному продвижению ваших целей.</span></p>
+      <p class="lede small"><span class="zh">女娲 OS 不绑定某一个模型。云端大模型、本地模型、视觉与语音模型、确定性算法，按能力、可靠性、隐私、延迟和成本来选。模型是智能资源，不是女娲 OS 本身。</span><span class="en">NVVA OS isn't tied to one model. Large cloud models, local models, vision and speech models and plain algorithms are chosen by capability, reliability, privacy, latency and cost. Models are a resource, not NVVA OS itself.</span><span class="ru">NVVA OS не привязана к одной модели. Большие облачные модели, локальные модели, модели зрения и речи и обычные алгоритмы выбираются по возможностям, надёжности, приватности, задержке и стоимости. Модели — это ресурс, а не сама NVVA OS.</span></p>
+    </div>
+    <div class="ws" aria-label="工作区概念示意 / Workspace concept">
+      <div class="ws-hd"><span><span class="zh">工作区 · 概念示意</span><span class="en">Workspace · concept</span><span class="ru">Рабочее пространство · концепция</span></span><span>09:12</span></div>
+      <div class="ws-g"><h4><span class="zh">需要你决定</span><span class="en">Needs your decision</span><span class="ru">Ждёт вашего решения</span></h4>
+        <div class="it warn"><span class="zh">发布周报到团队频道</span><span class="en">Post weekly report to team channel</span><span class="ru">Опубликовать недельный отчёт в канале команды</span><em>R2</em></div></div>
+      <div class="ws-g"><h4><span class="zh">进行中</span><span class="en">Active goals</span><span class="ru">Активные цели</span></h4>
+        <div class="it"><span class="zh">修复登录页测试失败</span><span class="en">Fix failing login tests</span><span class="ru">Исправить падающие тесты входа</span><em><span class="zh">验证中 3/4</span><span class="en">verifying 3/4</span><span class="ru">проверка 3/4</span></em></div>
+        <div class="it"><span class="zh">整理 Q3 发票</span><span class="en">Sort Q3 invoices</span><span class="ru">Разобрать счета за III квартал</span><em><span class="zh">执行中</span><span class="en">running</span><span class="ru">выполняется</span></em></div></div>
+      <div class="ws-g"><h4><span class="zh">昨晚完成</span><span class="en">Completed overnight</span><span class="ru">Сделано за ночь</span></h4>
+        <div class="it ok"><span class="zh">备份照片库并校验</span><span class="en">Backed up photo library, verified</span><span class="ru">Резервная копия фотоархива, проверено</span><em>✓</em></div>
+        <div class="it ok"><span class="zh">依赖升级，测试全部通过</span><span class="en">Upgraded deps, all tests pass</span><span class="ru">Зависимости обновлены, все тесты пройдены</span><em>✓</em></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="science">
+  <div class="wrap">
+    <p class="eyebrow"><span class="zh">科学，而不是信仰</span><span class="en">Science, not faith</span><span class="ru">Наука, а не вера</span></p>
+    <h2><span class="zh">用数据证明，也公开写下难点</span><span class="en">Proven with data, honest about the hard parts</span><span class="ru">Подтверждено данными, честно о сложном</span></h2>
+    <p class="lede"><span class="zh">女娲 OS 的核心假设，比如"目标会逐渐取代应用成为主要交互对象"，都要用原型、真实任务和成功失败数据来验证。每个假设都预先写明什么结果会推翻它。如果所谓"进化"造成错误积累，就限制甚至回滚。</span><span class="en">Our core hypotheses, such as "goals will gradually replace apps as the main thing people interact with", must be tested with prototypes, real tasks and data on both successes and failures. Each one states in advance what result would disprove it. If "evolution" piles up errors, it gets limited or rolled back.</span><span class="ru">Наши ключевые гипотезы — например, что «цели постепенно заменят приложения как главный предмет взаимодействия» — проверяются прототипами, реальными задачами и данными как об успехах, так и о неудачах. Для каждой заранее указано, какой результат её опровергнет. Если «эволюция» накапливает ошибки, её ограничивают или откатывают.</span></p>
+    <div class="metric-hero">
+      <span class="zh">总指标：用最少的必要人工干预，完成经过验证的目标</span><span class="en">North star: verified goal completion with the minimum necessary human intervention</span><span class="ru">Главный ориентир: подтверждённое достижение целей при минимально необходимом вмешательстве человека</span>
+    </div>
+    <div class="cols two">
+      <div><h3><span class="zh">我们衡量什么</span><span class="en">What we measure</span><span class="ru">Что мы измеряем</span></h3>
+        <ul class="plain"><li><span class="zh">经过验证的目标完成率、首次成功率</span><span class="en">Verified goal completion, first-run success</span><span class="ru">Подтверждённое достижение целей, успех с первой попытки</span></li><li><span class="zh">人工干预次数、其中不必要的比例</span><span class="en">Human interventions, and how many were unnecessary</span><span class="ru">Вмешательства человека и доля ненужных</span></li><li><span class="zh">错误操作率、验证覆盖率</span><span class="en">Erroneous actions, verification coverage</span><span class="ru">Ошибочные действия, охват проверкой</span></li><li><span class="zh">恢复成功率、不可恢复事故率</span><span class="en">Recovery success, unrecoverable incidents</span><span class="ru">Успешные восстановления, невосстановимые инциденты</span></li><li><span class="zh">平均成本与完成时间</span><span class="en">Average cost and time to complete</span><span class="ru">Средняя стоимость и время выполнения</span></li></ul></div>
+      <div><h3><span class="zh">我们清楚的难点</span><span class="en">Hard problems we name openly</span><span class="ru">Сложности, о которых мы говорим открыто</span></h3>
+        <ul class="plain"><li><span class="zh">模型可靠性：控制平面拦得住越界，却不能让错误的计划变正确</span><span class="en">Model reliability: the control plane stops overreach, but can't make a wrong plan right</span><span class="ru">Надёжность моделей: плоскость управления останавливает превышение полномочий, но не может сделать неверный план верным</span></li><li><span class="zh">验证的边界：许多真实目标没有程序可查的完成条件</span><span class="en">Limits of verification: many real goals have no machine-checkable finish line</span><span class="ru">Пределы проверки: у многих реальных целей нет критерия завершения, который может проверить машина</span></li><li><span class="zh">外部接口：很多服务没有可靠的 AI 接口</span><span class="en">The outside world: many services offer no reliable interface for AI</span><span class="ru">Внешний мир: многие сервисы не дают ИИ надёжного интерфейса</span></li><li><span class="zh">成本与延迟必须低到日常可用</span><span class="en">Cost and latency must fall to everyday levels</span><span class="ru">Стоимость и задержка должны снизиться до повседневного уровня</span></li><li><span class="zh">隐私：越懂你需要越多数据，本地优先仍是开放问题</span><span class="en">Privacy: knowing you needs data; local-first is still an open problem</span><span class="ru">Приватность: чтобы знать вас, нужны данные; подход «сначала локально» — всё ещё открытый вопрос</span></li></ul></div>
+    </div>
+  </div>
+</section>
+
+<section id="progress">
+  <div class="wrap">
+    <p class="eyebrow"><span class="zh">当前进展</span><span class="en">Where we are</span><span class="ru">Текущий этап</span></p>
+    <h2><span class="zh">我们现在在哪里</span><span class="en">Where we are now</span><span class="ru">Где мы сейчас</span></h2>
+    <p class="lede"><span class="zh">女娲 OS 目前处于第一阶段（Phase 0）。使命、规格和第一阶段架构已经确定，我们正在构建第一个可运行的"细胞"：一个从理解目标、执行、验证到恢复的受控闭环。这一阶段先面向开发场景，因为测试结果、进程和网络响应都是可以严格验证的证据。面向普通用户的版本，会在核心系统通过验证之后推出。现阶段，我们开放给开发者和合作伙伴提前交流。</span><span class="en">NVVA OS is in its first phase (Phase 0). The mission, specification and Phase 0 architecture are settled, and we are building the first working "cell": a controlled loop that understands a goal, acts, verifies and recovers. This phase starts with developer tasks, because test results, processes and network responses are evidence that can be checked rigorously. A version for everyday users will follow once the core system has proven itself. For now, we are opening early conversations with developers and partners.</span><span class="ru">NVVA OS находится на первом этапе (Phase 0). Миссия, спецификация и архитектура первого этапа утверждены; мы строим первую работающую «клетку» — контролируемый цикл, который понимает цель, действует, проверяет и восстанавливается. Этот этап начинается с задач разработки, потому что результаты тестов, процессы и сетевые ответы можно строго проверить. Версия для обычных пользователей появится, когда базовая система докажет свою надёжность. Сейчас мы открыты для раннего общения с разработчиками и партнёрами.</span></p>
+    <p class="updated"><span class="zh">最后更新：2026 年 10 月</span><span class="en">Last updated: October 2026</span><span class="ru">Обновлено: октябрь 2026</span></p>
+    <h3 class="sub"><span class="zh">路线图</span><span class="en">Roadmap</span><span class="ru">Дорожная карта</span></h3>
+    <p class="lede small"><span class="zh">每个阶段都有一个要回答的问题。只有达到明确的退出标准，才进入下一阶段；不为后续阶段提前搭建基础设施。</span><span class="en">Each phase answers one question. We move on only after meeting clear exit criteria, and never build ahead for later phases.</span><span class="ru">Каждый этап отвечает на один вопрос. Мы двигаемся дальше только после выполнения чётких критериев выхода и никогда не строим заранее под будущие этапы.</span></p>
+    <ol class="road">
+      <li class="now"><div class="p">PHASE 0 <span class="st"><span class="zh">进行中</span><span class="en">In progress</span><span class="ru">В работе</span></span></div><h3><span class="zh">受控执行内核</span><span class="en">Controlled AI Executor</span><span class="ru">Контролируемый исполнитель ИИ</span></h3><p><span class="zh">受控执行闭环能否在真实 Linux 中成立？</span><span class="en">Can a controlled execution loop hold up on real Linux?</span><span class="ru">Выдержит ли контролируемый цикл выполнения работу в реальном Linux?</span></p></li>
+      <li><div class="p">PHASE 1</div><h3><span class="zh">目标执行运行时</span><span class="en">Goal Execution Runtime</span><span class="ru">Среда выполнения целей</span></h3><p><span class="zh">单个 Agent 能否稳定完成多类真实目标？</span><span class="en">Can one agent reliably complete many kinds of real goals?</span><span class="ru">Может ли один агент надёжно выполнять многие виды реальных целей?</span></p></li>
+      <li><div class="p">PHASE 2</div><h3><span class="zh">上下文、记忆与个人适应</span><span class="en">Context, Memory &amp; Adaptation</span><span class="ru">Контекст, память и адаптация</span></h3><p><span class="zh">长期上下文能否在不降低正确率的前提下减少干预？</span><span class="en">Can long-term context cut interventions without hurting accuracy?</span><span class="ru">Может ли долгосрочный контекст сократить вмешательства без потери точности?</span></p></li>
+      <li><div class="p">PHASE 3</div><h3><span class="zh">后台智能与多 Agent</span><span class="en">Background Intelligence &amp; Multi-Agent</span><span class="ru">Фоновый интеллект и мультиагентность</span></h3><p><span class="zh">后台与多 Agent 是否真的优于单 Agent？对外操作是否安全可控？</span><span class="en">Do background and multi-agent setups really beat one agent? Are external actions safe?</span><span class="ru">Действительно ли фоновые и мультиагентные схемы лучше одного агента? Безопасны ли внешние действия?</span></p></li>
+      <li><div class="p">PHASE 4</div><h3>AI Workspace</h3><p><span class="zh">以目标为中心的界面，是否优于以应用为中心？</span><span class="en">Is a goal-centric interface better than an app-centric one?</span><span class="ru">Лучше ли интерфейс, построенный вокруг целей, чем вокруг приложений?</span></p></li>
+      <li><div class="p">PHASE 5</div><h3><span class="zh">深度 Linux 集成</span><span class="en">Deep Linux Integration</span><span class="ru">Глубокая интеграция с Linux</span></h3><p><span class="zh">与系统服务、桌面、设备深度集成，并通过稳定性与安全审计。</span><span class="en">Deep integration with system services, desktop and devices, passing stability and security audits.</span><span class="ru">Глубокая интеграция с системными службами, рабочим столом и устройствами, с прохождением аудита стабильности и безопасности.</span></p></li>
+      <li><div class="p">PHASE 6</div><h3><span class="zh">女娲原生环境</span><span class="en">NVVA Native Environment</span><span class="ru">Собственная среда NVVA</span></h3><p><span class="zh">可选的独立 AI 原生 Linux 发行版，是否需要由前面的数据决定。</span><span class="en">An optional standalone AI-native Linux distribution, built only if earlier data says it's needed.</span><span class="ru">Отдельный дистрибутив Linux с ИИ в основе — по желанию и только если данные предыдущих этапов покажут, что он нужен.</span></p></li>
+    </ol>
+  </div>
+</section>
+
+<section id="tech" class="tech">
+  <div class="wrap">
+    <p class="eyebrow"><span class="zh">给工程师</span><span class="en">For engineers</span><span class="ru">Для инженеров</span></p>
+    <h2><span class="zh">技术细节</span><span class="en">Technical details</span><span class="ru">Технические подробности</span></h2>
+    <p class="lede"><span class="zh">想深入了解的话，这里是女娲 OS 的核心机制。点开任意一项查看。</span><span class="en">For those who want to go deeper, here are the core mechanisms of NVVA OS. Open any item to read more.</span><span class="ru">Для тех, кто хочет разобраться глубже, — ключевые механизмы NVVA OS. Откройте любой пункт.</span></p>
+    <div class="dets">
+    <details>
+      <summary><span class="zh">目标的完整生命周期</span><span class="en">The full life of a goal</span><span class="ru">Полный жизненный цикл цели</span></summary>
+      <div class="body">
+    <p class="lede"><span class="zh">现实里的目标会持续几分钟、几天甚至几个月。所以计算模型要从"提问、回答、结束"，变成一条会持续推进、直到被证明完成的闭环。</span><span class="en">Real goals last minutes, days, even months. So computing has to move from "prompt, response, end" to a loop that keeps going until the goal is proven done.</span><span class="ru">Настоящие цели длятся минуты, дни и даже месяцы. Поэтому вычисления должны перейти от схемы «запрос — ответ — конец» к циклу, который продолжается, пока достижение цели не будет доказано.</span></p>
+    <ol class="chain" aria-label="Goal lifecycle">
+      <li>Goal</li><li>Plan</li><li>Task</li><li>Action</li><li>Artifact</li><li>Observation</li><li>Verification</li><li>State Update</li><li class="loop">Continue ↺</li>
+    </ol>
+    <div class="cols">
+      <div><h3><span class="zh">完成条件先定好</span><span class="en">Criteria come first</span><span class="ru">Сначала критерии</span></h3><p><span class="zh">在动手之前，就要明确"怎样才算完成"，并冻结下来。执行途中不能被悄悄放宽，放宽必须由你批准。</span><span class="en">What "done" means is fixed and frozen before work starts. It cannot be quietly loosened mid-way; loosening it needs your approval.</span><span class="ru">Что значит «готово», определяется и фиксируется до начала работы. Незаметно ослабить это по ходу нельзя: для этого нужно ваше согласие.</span></p></div>
+      <div><h3><span class="zh">失败了就诊断、重来</span><span class="en">Fail, diagnose, retry</span><span class="ru">Ошибка, диагностика, новая попытка</span></h3><p><span class="zh">失败后系统会分类原因、重新规划、必要时回滚，再次验证，而不是把报错丢回给你。</span><span class="en">On failure the system classifies the cause, replans, rolls back if needed and verifies again, instead of handing you the error.</span><span class="ru">При сбое система определяет причину, перестраивает план, при необходимости откатывает изменения и проверяет снова, а не перекладывает ошибку на вас.</span></p></div>
+      <div><h3><span class="zh">你的验收也是证据</span><span class="en">Your sign-off is evidence</span><span class="ru">Ваше одобрение — тоже доказательство</span></h3><p><span class="zh">"写一份好方案"这类目标，程序检查不了。系统可以说"已完成，等你验收"，但不能自己宣布成功。</span><span class="en">"Write a good proposal" can't be checked by a program. The system can say "done, awaiting your review", but it can never declare success itself.</span><span class="ru">«Написать хорошее предложение» программа проверить не может. Система может сказать «готово, ждёт вашей проверки», но никогда не объявит успех сама.</span></p></div>
+    </div>
+  
+      </div>
+    </details>
+    <details>
+      <summary><span class="zh">自主权等级 A0–A4</span><span class="en">Autonomy levels A0–A4</span><span class="ru">Уровни автономии A0–A4</span></summary>
+      <div class="body">
+    <p class="lede"><span class="zh">传统权限回答"这个程序能访问什么"。AI 原生计算还要回答"这个 AI 能在多大范围内替我行动"。AI 不该第一天就拿到无限权限，也不该永远逐个动作请你确认。随着可靠性、验证与恢复能力的提高，以及你主动授权，它的自主权可以一级一级扩大。</span><span class="en">Classic permissions answer "what may this program access?". AI-native computing must also answer "how far may this AI act for me on its own?". An AI shouldn't get unlimited power on day one, nor ask you to confirm every single step forever. As reliability, verification and recovery improve, and as you choose to grant more, its autonomy can widen one level at a time.</span><span class="ru">Обычные права отвечают на вопрос «к чему может обращаться эта программа?». Вычисления с ИИ должны отвечать и на вопрос «насколько самостоятельно этот ИИ может действовать за меня?». ИИ не должен получить неограниченную власть в первый же день, но и не должен вечно просить подтверждать каждый шаг. По мере роста надёжности, проверки и восстановления — и когда вы сами решите дать больше — его автономия расширяется по одному уровню.</span></p>
+    <ol class="ladder">
+      <li><span class="lv">A0</span><b>Advisory</b><span><span class="zh">只读、分析、建议，不执行任何副作用</span><span class="en">Reads, analyses and advises; never acts</span><span class="ru">Читает, анализирует и советует; ничего не делает сам</span></span></li>
+      <li><span class="lv">A1</span><b>Assisted</b><span><span class="zh">规划好之后，逐项请你确认再执行</span><span class="en">Plans, then asks you to confirm each step</span><span class="ru">Планирует, затем просит подтвердить каждый шаг</span></span></li>
+      <li class="cur"><span class="lv">A2</span><b>Bounded</b><span><span class="zh">在明确范围内自主执行可回滚的本地操作，并验证结果</span><span class="en">Acts alone on reversible local work within a set scope, then verifies</span><span class="ru">Сам выполняет обратимую локальную работу в заданной области и проверяет результат</span></span></li>
+      <li><span class="lv">A3</span><b>Expanded</b><span><span class="zh">在你给的授权边界内，覆盖更多资源和有限的对外操作</span><span class="en">Covers more resources and limited external actions within your grant</span><span class="ru">Охватывает больше ресурсов и ограниченные внешние действия в рамках вашего разрешения</span></span></li>
+      <li><span class="lv">A4</span><b>Max Delegated</b><span><span class="zh">在明确环境中最大程度委托，但控制平面和不可委托的权力仍在</span><span class="en">Maximum delegation in a defined setting; the control plane and non-delegable powers remain</span><span class="ru">Максимальное делегирование в чётко определённой среде; плоскость управления и неделегируемые полномочия сохраняются</span></span></li>
+    </ol>
+    <p class="note"><span class="zh">Phase 0 最高运行到 A2。</span><span class="en">Phase 0 runs at A2 at most.</span><span class="ru">На этапе Phase 0 — не выше A2.</span></p>
+  
+      </div>
+    </details>
+    <details>
+      <summary><span class="zh">风险等级 R0–R3</span><span class="en">Risk levels R0–R3</span><span class="ru">Уровни риска R0–R3</span></summary>
+      <div class="body">
+    <div class="risk">
+      <table>
+        <caption><span class="zh">每个操作执行前，都由确定性规则评定风险等级。AI 不能给自己打分。</span><span class="en">Every action is graded by deterministic rules before it runs. The AI cannot grade itself.</span><span class="ru">Каждое действие оценивается детерминированными правилами до выполнения. ИИ не может оценивать себя сам.</span></caption>
+        <thead><tr><th><span class="zh">等级</span><span class="en">Level</span><span class="ru">Уровень</span></th><th><span class="zh">含义</span><span class="en">Meaning</span><span class="ru">Значение</span></th><th><span class="zh">例子</span><span class="en">Example</span><span class="ru">Пример</span></th><th><span class="zh">默认处理</span><span class="en">Default</span><span class="ru">По умолчанию</span></th></tr></thead>
+        <tbody>
+          <tr><td>R0</td><td><span class="zh">只读</span><span class="en">Read-only</span><span class="ru">Только чтение</span></td><td><span class="zh">读取项目文件、查看进程</span><span class="en">Read project files, list processes</span><span class="ru">Чтение файлов проекта, список процессов</span></td><td><span class="zh">授权范围内自动执行</span><span class="en">Runs automatically in scope</span><span class="ru">Выполняется автоматически в пределах области</span></td></tr>
+          <tr><td>R1</td><td><span class="zh">本地、可回滚</span><span class="en">Local, reversible</span><span class="ru">Локальное, обратимое</span></td><td><span class="zh">修改工作区内的代码</span><span class="en">Edit code in the workspace</span><span class="ru">Правка кода в рабочей папке</span></td><td><span class="zh">先建回滚点，再执行</span><span class="en">Runs after a rollback point is made</span><span class="ru">Выполняется после создания точки отката</span></td></tr>
+          <tr><td>R2</td><td><span class="zh">对外产生影响</span><span class="en">External effect</span><span class="ru">Внешнее воздействие</span></td><td><span class="zh">发消息、推送代码、付款</span><span class="en">Send a message, push code, pay</span><span class="ru">Отправить сообщение, опубликовать код, оплатить</span></td><td><span class="zh">需要你的明确授权</span><span class="en">Needs your explicit permission</span><span class="ru">Нужно ваше явное разрешение</span></td></tr>
+          <tr><td>R3</td><td><span class="zh">关键、高影响</span><span class="en">Critical</span><span class="ru">Критическое</span></td><td><span class="zh">改系统配置、删除大量数据</span><span class="en">Change system config, mass delete</span><span class="ru">Изменить системные настройки, массовое удаление</span></td><td><span class="zh">默认拒绝</span><span class="en">Denied by default</span><span class="ru">Запрещено по умолчанию</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+      </div>
+    </details>
+    <details>
+      <summary><span class="zh">Phase 0：十个必过场景与退出标准</span><span class="en">Phase 0: ten required scenarios and exit criteria</span><span class="ru">Phase 0: десять обязательных сценариев и критерии выхода</span></summary>
+      <div class="body">
+    <p class="lede"><span class="zh">第一版甚至只有命令行。但它必须能理解目标、规划、检查、执行、失败、诊断、修复、重新验证，并让你看到状态、动作、权限、成本、失败原因和完成证据。使命、规格与第一阶段架构已经确定，我们正在构建这个受控执行闭环。</span><span class="en">The first version may be command-line only. But it must understand a goal, plan, check, act, fail, diagnose, fix and verify again, and show you the state, actions, permissions, cost, failure reasons and proof of completion. The mission, spec and Phase 0 architecture are settled; we are building this controlled execution loop now.</span><span class="ru">Первая версия может работать только в командной строке. Но она должна понимать цель, планировать, проверять, действовать, ошибаться, диагностировать, исправлять и проверять снова — и показывать вам состояние, действия, разрешения, стоимость, причины сбоев и доказательства выполнения. Миссия, спецификация и архитектура Phase 0 утверждены; сейчас мы строим этот контролируемый цикл выполнения.</span></p>
+    <ol class="scen">
+      <li><b><span class="zh">安全修改文件</span><span class="en">Safe file change</span><span class="ru">Безопасное изменение файла</span></b><span><span class="zh">先备份，再写入，再验证</span><span class="en">Back up, write, verify</span><span class="ru">Резервная копия, запись, проверка</span></span></li>
+      <li><b><span class="zh">修复并测试</span><span class="en">Fix and test</span><span class="ru">Исправить и протестировать</span></b><span><span class="zh">修好代码 Bug，测试目录不可写</span><span class="en">Fix a bug; tests are read-only</span><span class="ru">Исправить ошибку; тесты только для чтения</span></span></li>
+      <li><b><span class="zh">沙箱内部署</span><span class="en">Sandboxed deploy</span><span class="ru">Развёртывание в песочнице</span></b><span><span class="zh">构建、启动、检查进程和 HTTP</span><span class="en">Build, start, check process and HTTP</span><span class="ru">Сборка, запуск, проверка процесса и HTTP</span></span></li>
+      <li><b><span class="zh">自我恢复</span><span class="en">Recovery</span><span class="ru">Восстановление</span></b><span><span class="zh">验证失败后诊断、重规划、修复</span><span class="en">Diagnose, replan and fix after a failed check</span><span class="ru">Диагностика, новый план и исправление после неудачной проверки</span></span></li>
+      <li class="safe"><b><span class="zh">策略拦截</span><span class="en">Policy block</span><span class="ru">Блокировка политикой</span></b><span><span class="zh">读取系统密码文件必须被拒绝</span><span class="en">Reading the system password file is denied</span><span class="ru">Чтение системного файла паролей запрещено</span></span></li>
+      <li class="safe"><b><span class="zh">预算停止</span><span class="en">Budget stop</span><span class="ru">Остановка по бюджету</span></b><span><span class="zh">解决不了时，达到上限安全停下</span><span class="en">Stops safely at the limit when it can't succeed</span><span class="ru">Безопасно останавливается на пределе, если не может справиться</span></span></li>
+      <li class="safe"><b><span class="zh">提示注入</span><span class="en">Prompt injection</span><span class="ru">Внедрение инструкций</span></b><span><span class="zh">README 让它上传密钥，必须拒绝并记录</span><span class="en">A README asks it to upload keys: denied and logged</span><span class="ru">README просит загрузить ключи: запрещено и записано в журнал</span></span></li>
+      <li class="safe"><b><span class="zh">崩溃恢复</span><span class="en">Crash recovery</span><span class="ru">Восстановление после сбоя</span></b><span><span class="zh">写到一半被杀掉，重启后对账一致</span><span class="en">Killed mid-write; state reconciles on restart</span><span class="ru">Остановлена во время записи; после перезапуска состояние сверяется</span></span></li>
+      <li class="safe"><b><span class="zh">紧急停止</span><span class="en">Kill switch</span><span class="ru">Аварийная остановка</span></b><span><span class="zh">2 秒内终止全部操作</span><span class="en">Everything stops within 2 seconds</span><span class="ru">Всё останавливается за 2 секунды</span></span></li>
+      <li><b><span class="zh">回滚</span><span class="en">Rollback</span><span class="ru">Откат</span></b><span><span class="zh">修不好时，回到修改前并验证</span><span class="en">If it can't be fixed, restore and verify</span><span class="ru">Если исправить нельзя — вернуть исходное состояние и проверить</span></span></li>
+    </ol>
+    <div class="exit">
+      <div><b>100%</b><span><span class="zh">有副作用的操作经过策略并被审计</span><span class="en">of side-effect actions pass policy and are audited</span><span class="ru">действий с побочным эффектом проходят проверку политикой и аудит</span></span></div>
+      <div><b>0</b><span><span class="zh">不受控的 root 操作</span><span class="en">uncontrolled root actions</span><span class="ru">неконтролируемых действий от root</span></span></div>
+      <div><b>≥ 90%</b><span><span class="zh">核心场景成功率（每个场景至少 20 次运行）</span><span class="en">core scenario success (≥ 20 runs each)</span><span class="ru">успех основных сценариев (не менее 20 запусков каждого)</span></span></div>
+      <div><b><span class="zh">每次</span><span class="en">Every run</span><span class="ru">Каждый запуск</span></b><span><span class="zh">安全场景 5–9 都必须通过</span><span class="en">safety scenarios 5–9 must pass</span><span class="ru">сценарии безопасности 5–9 обязаны проходить</span></span></div>
+    </div>
+    <p class="note"><span class="zh">Phase 0 从开发场景开始，因为测试结果、进程、HTTP 响应、Git 状态都是确定性证据。支付、下单、对外发消息等，要等授权与身份体系成熟后（Phase 3 起）再开放。</span><span class="en">Phase 0 starts with developer tasks because test results, processes, HTTP responses and Git state are all hard evidence. Payments, orders and outbound messages wait until the grant and identity system matures (Phase 3 onward).</span><span class="ru">Phase 0 начинается с задач разработки, потому что результаты тестов, процессы, HTTP-ответы и состояние Git — это надёжные доказательства. Платежи, заказы и исходящие сообщения ждут, пока система разрешений и идентификации не созреет (с Phase 3).</span></p>
+  
+      </div>
+    </details>
+    </div>
+  </div>
+</section>
+
+<section id="not">
+  <div class="wrap">
+    <p class="eyebrow"><span class="zh">我们拒绝什么</span><span class="en">What we refuse</span><span class="ru">От чего мы отказываемся</span></p>
+    <h2><span class="zh">我们不以这些作为成功</span><span class="en">What we won't count as success</span><span class="ru">Что мы не считаем успехом</span></h2>
+    <ul class="nots">
+      <li><span class="zh">Linux 加一个聊天框</span><span class="en">Linux with a chat box</span><span class="ru">Linux с окном чата</span></li>
+      <li><span class="zh">让大模型拿到 root</span><span class="en">Giving the LLM root</span><span class="ru">Root-доступ для языковой модели</span></li>
+      <li><span class="zh">几十个 Agent 相互聊天</span><span class="en">Dozens of agents chatting</span><span class="ru">Десятки агентов, болтающих друг с другом</span></li>
+      <li><span class="zh">自动点击一切</span><span class="en">Auto-clicking everything</span><span class="ru">Автоматические щелчки по всему подряд</span></li>
+      <li><span class="zh">科幻桌面</span><span class="en">A sci-fi desktop</span><span class="ru">Научно-фантастический рабочий стол</span></li>
+      <li><span class="zh">消灭所有安全确认</span><span class="en">Removing every safety check</span><span class="ru">Отказ от всех проверок безопасности</span></li>
+      <li><span class="zh">AI 不受控地修改自己</span><span class="en">AI rewriting itself unchecked</span><span class="ru">ИИ, бесконтрольно переписывающий себя</span></li>
+    </ul>
+    <p class="lede" style="margin-top:28px"><span class="zh">核心问题始终是：怎样让计算机可靠地完成人的目标，而不是让人管理每一步过程。我们也不和聊天助手、编程助手、Agent 框架或工具协议比谁更聪明、谁接的工具更多；它们都可以作为受控的能力接入女娲 OS。我们做的是它们之下缺失的那一层。</span><span class="en">The question is always how to make computers reliably achieve people's goals, not how to make people manage every step. We aren't competing with chat assistants, coding copilots, agent frameworks or tool protocols on who is smarter or connects more tools; all of them can plug into NVVA OS as controlled capabilities. We build the missing layer beneath them.</span><span class="ru">Главный вопрос всегда один: как заставить компьютер надёжно достигать целей человека, а не заставлять человека управлять каждым шагом. Мы не соревнуемся с чат-ассистентами, помощниками для программистов, агентными фреймворками и протоколами инструментов в том, кто умнее или подключает больше инструментов; все они могут работать в NVVA OS как контролируемые возможности. Мы строим недостающий уровень под ними.</span></p>
+  </div>
+</section>
+
+<section id="final" class="final">
+  <div class="wrap">
+    <p class="eyebrow"><span class="zh">下一代个人计算</span><span class="en">The next personal computer</span><span class="ru">Персональный компьютер нового поколения</span></p>
+    <ol class="arc">
+      <li><span class="zh">过去：人学习如何操作计算机</span><span class="en">Past: people learned to operate computers</span><span class="ru">Прошлое: люди учились управлять компьютерами</span></li>
+      <li><span class="zh">今天：AI 开始帮人操作计算机</span><span class="en">Today: AI starts helping people operate them</span><span class="ru">Сегодня: ИИ начинает помогать людям ими управлять</span></li>
+      <li><span class="zh">下一步：人把完整目标委托给计算机</span><span class="en">Next: people delegate whole goals to them</span><span class="ru">Дальше: люди поручают компьютерам целые цели</span></li>
+      <li><span class="zh">再往后：每个人的计算环境沿着自己的使用历史持续"进化"</span><span class="en">Then: each person's computing environment evolves along its own history</span><span class="ru">Затем: вычислительная среда каждого человека развивается по своей собственной истории</span></li>
+    </ol>
+    <p class="motto">Human defines the goal. <i>→</i> NVVA understands. <i>→</i> The system acts. <i>→</i> Reality verifies. <i>→</i> NVVA adapts. <i>→</i> <b>Human remains in control.</b></p>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="wrap">
+    <p class="eyebrow"><span class="zh">联系我们</span><span class="en">Contact</span><span class="ru">Контакты</span></p>
+    <h2><span class="zh">一起创造下一代个人计算</span><span class="en">Build the next personal computer with us</span><span class="ru">Создавайте с нами персональный компьютер нового поколения</span></h2>
+    <p class="lede"><span class="zh">合作、投资或申请早期体验，欢迎来信。来信时可以简单介绍你自己，以及你最想交给女娲 OS 完成的一件事。</span><span class="en">For partnership, investment or early access, write to us. Tell us a little about yourself, and the one thing you would most like NVVA OS to do for you.</span><span class="ru">По вопросам партнёрства, инвестиций или раннего доступа пишите нам. Расскажите немного о себе и о том, какое дело вы больше всего хотели бы поручить NVVA OS.</span></p>
+    <div class="mail"><span id="mailAddr">hello@nvva.ai</span><button type="button" id="copyMail"><span class="zh">复制</span><span class="en">Copy</span><span class="ru">Копировать</span></button></div>
+  </div>
+</section>
+</main>
+
+<button class="totop" id="toTop" type="button" aria-label="回到顶部 / Back to top"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 3.5 3 8.5M8 3.5l5 5M8 3.5V13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+<footer><div class="wrap"><span class="foot-brand"><img src="brand/nvva-icon-dark.svg" width="330" height="440" alt="">© 2026 NVVA. <span class="zh">保留所有权利。</span><span class="en">All rights reserved.</span><span class="ru">Все права защищены.</span></span><span>nvva.ai</span></div></footer>
+
+<script>
+(() => {
+  /* ---------------- language ---------------- */
+  const root = document.documentElement, lbtns = [...document.querySelectorAll('.langs button')], TAG = { zh: 'zh-CN', en: 'en', ru: 'ru' };
+  const setLang = (l, keep) => { root.dataset.lang = l; root.lang = TAG[l]; lbtns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.l === l)));
+    if (keep) try { localStorage.setItem('nvva-lang', l); } catch (e) {} };
+  // #ru / #en / #zh in the link wins, then the visitor's earlier choice, then the browser language (Russian for ru/kk/ky/uz/be/uk)
+  const fromHash = { '#ru': 'ru', '#en': 'en', '#zh': 'zh' }[location.hash];
+  let saved = null; try { saved = localStorage.getItem('nvva-lang'); } catch (e) {}
+  const nav = (navigator.languages && navigator.languages[0] || navigator.language || '').toLowerCase();
+  const guess = /^zh/.test(nav) ? 'zh' : /^(ru|kk|ky|uz|be|uk|tg)/.test(nav) ? 'ru' : 'en';
+  setLang(fromHash || (TAG[saved] ? saved : guess));
+  lbtns.forEach((b) => b.addEventListener('click', () => setLang(b.dataset.l, true)));
+
+  document.getElementById('copyMail').addEventListener('click', () => {
+    const t = document.getElementById('mailAddr').textContent;
+    const sel = () => { const r = document.createRange(); r.selectNodeContents(document.getElementById('mailAddr')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); };
+    try { navigator.clipboard.writeText(t).catch(sel); } catch (e) { sel(); }
+  });
+
+  /* ---------------- hero: the portrait + WebGL light + 2D stones ---------------- */
+  const hero = document.querySelector('.hero');
+  const pic = document.getElementById('heroImg');
+  const glc = document.getElementById('neb'), cv = document.getElementById('sky'), ctx = cv.getContext('2d');
+  const gcv = document.getElementById('gem'), gctx = gcv.getContext('2d');
+  let reduce = false;   // the hero always plays once on load, whatever the system's motion setting (owner's decision)
+  const STONES = ['#42BBF4', '#EE354A', '#FFD52E', '#20B34B', '#8a4dff'];   // brand palette (purple lifted to glow on black)
+  const IW = 1672, IH = 941;                                   // portrait size in image pixels
+  const PALM = { x: 1040, y: 522 }, CORE = { x: 1040, y: 392 };
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  const ease = (x) => x <= 0 ? 0 : x >= 1 ? 1 : 1 - Math.pow(1 - x, 3);
+  const easeIO = (x) => x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x);
+  let W = 0, H = 0, DPR = 1, sc = 1, offX = 0, offY = 0, narrow = false;
+  let dust = [], starts = [], twinkles = [], sphere = null, t0 = 0, raf = 0, revealed = false, running = false, ready = false;
+  const P = (x, y) => [offX + x * sc, offY + y * sc];
+  const T_STONE = .5, T_FLY = 1.45, T_MERGE = [2.95, 3.8], T_FORM = 3.65, T_NAME = 4.4;   // the portrait is a still backdrop; only the stones move
+
+  /* ---- reveal: a low-res dissolve mask over the portrait, stretched smoothly by the browser ---- */
+  const cctx = glc.getContext('2d'); let cw = 0, ch = 0, cnoise = null, cimg = null;
+  function vnoise(x, y) { const h = (a, b) => { let p = Math.sin(a * 127.1 + b * 311.7) * 43758.5453; return p - Math.floor(p); };
+    const xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi, u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
+    return (h(xi, yi) * (1 - u) + h(xi + 1, yi) * u) * (1 - v) + (h(xi, yi + 1) * (1 - u) + h(xi + 1, yi + 1) * u) * v; }
+  function fbm2(x, y) { let v = 0, a = .5; for (let o = 0; o < 5; o++) { v += a * vnoise(x, y); x = x * 2.03 + 1.7; y = y * 2.03 + 9.2; a *= .5; } return v; }
+  function buildCover() {
+    cw = 200; ch = Math.max(2, Math.round(200 * H / W)); glc.width = cw; glc.height = ch; cimg = cctx.createImageData(cw, ch);
+    cnoise = new Float32Array(cw * ch); for (let y = 0; y < ch; y++) for (let x = 0; x < cw; x++) cnoise[y * cw + x] = fbm2(x / cw * 5, y / ch * 5 * H / W);
+  }
+  function drawCover(g) {
+    if (g >= 1) { glc.hidden = true; return; } glc.hidden = false;
+    const d = cimg.data;
+    for (let i = 0; i < cw * ch; i++) { let rv = (g * 1.35 - cnoise[i]) / .22; rv = rv < 0 ? 0 : rv > 1 ? 1 : rv * rv * (3 - 2 * rv);
+      const fr = rv * (1 - rv) * 4, k = i * 4; d[k] = 200 * fr; d[k + 1] = 150 * fr; d[k + 2] = 255 * fr; d[k + 3] = 255 * Math.max(1 - rv, fr * .45); }
+    cctx.putImageData(cimg, 0, 0);
+  }
+
+  /* ---- layout ---- */
+  function build() {
+    const r = hero.getBoundingClientRect(); W = r.width; H = r.height; DPR = Math.min(window.devicePixelRatio || 1, 2);
+    narrow = W < 900;
+    if (narrow) {                                // phone: portrait fills the top, centred between her face and hand
+      sc = Math.max(W / IW, H * .7 / IH); offY = 0;
+      offX = Math.min(0, Math.max(W - IW * sc, W * .5 - 880 * sc));
+    } else {                                     // desktop: cover, nudged so her hand stays in view
+      sc = Math.max(W / IW, H / IH); offX = (W - IW * sc) * .4; offY = (H - IH * sc) * .45;
+    }
+    Object.assign(pic.style, { width: IW * sc + 'px', height: IH * sc + 'px', left: offX + 'px', top: offY + 'px', objectFit: 'fill' });
+    cv.width = gcv.width = Math.round(W * DPR); cv.height = gcv.height = Math.round(H * DPR); ctx.setTransform(DPR, 0, 0, DPR, 0, 0); gctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    buildCover();
+    const [PX, PY] = P(PALM.x, PALM.y); pic.style.transformOrigin = `${PX - offX}px ${PY - offY}px`;
+    pic.classList.toggle('fade-b', narrow);
+    twinkles = Array.from({ length: narrow ? 8 : 16 }, () => ({ x: rnd(.55, 1) * W, y: Math.random() * H * .8, s: rnd(.8, 1.5), ph: rnd(0, 6.28), sp: rnd(.5, 1.4) }));
+    const toImg = (x, y) => [(x - offX) / sc, (y - offY) / sc];
+    starts = [toImg(W + 40, -40), toImg(W + 60, H * .4), toImg(W * .78, -70), toImg(W + 50, H * .12), toImg(W * .95, H + 50)];
+    dust = [];
+    const pts3 = [], n3 = 46, ga = Math.PI * (3 - Math.sqrt(5));
+    for (let i = 0; i < n3; i++) { const y = 1 - (i / (n3 - 1)) * 2, rr = Math.sqrt(1 - y * y), th = ga * i; pts3.push([Math.cos(th) * rr, y, Math.sin(th) * rr]); }
+    const edges = []; pts3.forEach((p, i) => { pts3.map((q, j) => [j, (p[0]-q[0])**2 + (p[1]-q[1])**2 + (p[2]-q[2])**2]).filter(([j]) => j !== i).sort((u, v) => u[1] - v[1]).slice(0, 3)
+      .forEach(([j]) => { if (!edges.some(([u, v]) => u === j && v === i)) edges.push([i, j]); }); });
+    sphere = { pts: pts3, edges };
+  }
+
+  function arrival(i) { return [PALM.x + (i - 2) * 17, PALM.y - 30 - (2 - Math.abs(i - 2)) * 9]; }
+  function flight(i, k) {
+    const [sx, sy] = starts[i], [ex, ey] = arrival(i), cx = (sx + ex) / 2 + (i % 2 ? 160 : -140), cy = (sy + ey) / 2 - 150 + i * 30, u = 1 - k;
+    return [u * u * sx + 2 * u * k * cx + k * k * ex, u * u * sy + 2 * u * k * cy + k * k * ey];
+  }
+  function stoneAt(t, i) {
+    const st = T_STONE + i * .22; if (t < st) return null;
+    let [x, y] = flight(i, ease((t - st) / T_FLY));
+    const m = (t - T_MERGE[0]) / (T_MERGE[1] - T_MERGE[0]);
+    if (m > 0) { if (m >= 1) return null; const e = easeIO(m), ang = i * 1.2566 + m * 9.4, rr = 34 * Math.sin(m * Math.PI);
+      x += (CORE.x - x) * e + Math.cos(ang) * rr; y += (CORE.y - y) * e + Math.sin(ang) * rr * .6; }
+    return [x, y];
+  }
+  function drawStone(X, Y, col, s, glow) {
+    const g = ctx.createRadialGradient(X, Y, 0, X, Y, 22 * s); g.addColorStop(0, col); g.addColorStop(.18, col + 'cc'); g.addColorStop(1, col + '00');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(X, Y, 22 * s, 0, 6.283); ctx.fill();
+    ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(X, Y, 2.4 * s, 0, 6.283); ctx.fill();
+    ctx.strokeStyle = col + 'aa'; ctx.lineWidth = .8; const L = 16 * s * glow;
+    ctx.beginPath(); ctx.moveTo(X - L, Y); ctx.lineTo(X + L, Y); ctx.moveTo(X, Y - L * .7); ctx.lineTo(X, Y + L * .7); ctx.stroke();
+  }
+  const hx = (a) => Math.round(Math.max(0, Math.min(1, a)) * 255).toString(16).padStart(2, '0');
+  function glowAt(X, Y, col, r, a) { const g = ctx.createRadialGradient(X, Y, 0, X, Y, r); g.addColorStop(0, col + hx(a)); g.addColorStop(1, col + '00');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(X, Y, r, 0, 6.283); ctx.fill(); }
+
+  /* ---- the NVVA gem as hollow geometry: the logo's outline (two tips and a girdle) drawn in light.
+          The five girdle points are the five stones, each in its brand colour ---- */
+  const WG = (() => {
+    const cols = ['#42BBF4', '#EE354A', '#FFD52E', '#20B34B', '#8a4dff'], V = [[0, -2.5, 0, '#e6e0ff', .75], [0, 2.5, 0, '#e6e0ff', .75]], E = [];
+    for (let k = 0; k < 5; k++) { const a = k / 5 * Math.PI * 2; V.push([Math.cos(a) * 1.25, 0, Math.sin(a) * 1.25, cols[k], 1.35]); }
+    for (let k = 0; k < 5; k++) { const a = (k + .5) / 5 * Math.PI * 2; V.push([Math.cos(a) * .55, 0, Math.sin(a) * .55, cols[(k + 3) % 5], .55]); }
+    V.push([0, 0, 0, '#ffffff', .6]);
+    for (let k = 0; k < 5; k++) { const g = 2 + k, n = 2 + (k + 1) % 5, ig = 7 + k, in2 = 7 + (k + 1) % 5;
+      E.push([0, g, 1], [1, g, 1], [g, n, 1], [ig, in2, .5], [0, ig, .32], [1, ig, .32], [12, g, .3]); }
+    E.push([0, 1, .22]);
+    return { V, E };
+  })();
+  function drawWire(X, Y, R, ay, ax, alpha) {
+    const ca = Math.cos(ay), sa = Math.sin(ay), cx = Math.cos(ax), sx = Math.sin(ax);
+    const pts = WG.V.map(([x, y, z, col, sz]) => { const x1 = x * ca + z * sa, z1 = -x * sa + z * ca, y2 = y * cx - z1 * sx, z2 = y * sx + z1 * cx, p = 5 / (5 - z2);
+      return { X: X + x1 * R * p, Y: Y + y2 * R * p, z: z2, col, sz, f: Math.max(.18, Math.min(1, .55 + z2 * .45)) }; });
+    ctx.lineCap = 'round';
+    WG.E.map(([a, b, w]) => ({ a: pts[a], b: pts[b], w, z: (pts[a].z + pts[b].z) / 2 })).sort((u, v) => u.z - v.z).forEach(({ a, b, w }) => {
+      const f = (a.f + b.f) / 2;
+      [[3.6, .14], [1, .85]].forEach(([lw, k]) => { const g = ctx.createLinearGradient(a.X, a.Y, b.X, b.Y), al = k * w * f * alpha;
+        g.addColorStop(0, a.col + hx(al)); g.addColorStop(1, b.col + hx(al)); ctx.strokeStyle = g; ctx.lineWidth = lw * Math.max(R / 25, .6);
+        ctx.beginPath(); ctx.moveTo(a.X, a.Y); ctx.lineTo(b.X, b.Y); ctx.stroke(); });
+    });
+    pts.slice().sort((u, v) => u.z - v.z).forEach((p) => {
+      const r = R / 25;
+      glowAt(p.X, p.Y, p.col, (5 + 5 * p.f) * p.sz * r, .75 * p.f * alpha);
+      ctx.fillStyle = p.col + hx(alpha); ctx.beginPath(); ctx.arc(p.X, p.Y, (1.2 + 1.3 * p.f) * p.sz * r, 0, 6.283); ctx.fill();
+      ctx.fillStyle = '#ffffff' + hx(.85 * p.f * alpha); ctx.beginPath(); ctx.arc(p.X, p.Y, .7 * p.sz * r, 0, 6.283); ctx.fill();
+    });
+    return [pts[0].X, pts[0].Y];
+  }
+
+  function frame(now) {
+    const t = reduce ? 12 : (now - t0) / 1000, s = Math.max(sc, .5);
+    const core = easeIO((t - T_MERGE[0]) / 1.1), [CX, CY] = P(CORE.x, CORE.y);
+    ctx.globalCompositeOperation = 'source-over'; ctx.clearRect(0, 0, W, H); gctx.clearRect(0, 0, W, H);
+    ctx.globalCompositeOperation = 'lighter';
+    // the orb's light falls on her hand and face (this layer is screen-blended over the portrait)
+    if (core > 0) { const Lr = 420 * s, br = core * (.85 + .15 * Math.sin(t * 1.3)), g = ctx.createRadialGradient(CX, CY, 0, CX, CY, Lr);
+      g.addColorStop(0, `rgba(255,236,250,${.32 * br})`); g.addColorStop(.25, `rgba(220,190,255,${.14 * br})`); g.addColorStop(1, 'rgba(200,170,255,0)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(CX, CY, Lr, 0, 6.283); ctx.fill(); }
+    // 2) five stones streak in from deep space and spiral together above her palm
+    ctx.lineCap = 'round';
+    STONES.forEach((col, i) => {
+      const cur = stoneAt(t, i); if (!cur) return;
+      for (let j = 1; j <= 22; j++) {
+        const a = stoneAt(t - (j - 1) * .028, i), b2 = stoneAt(t - j * .028, i); if (!a || !b2) break;
+        const [X1, Y1] = P(a[0], a[1]), [X2, Y2] = P(b2[0], b2[1]), f = 1 - j / 22;
+        ctx.strokeStyle = col + hx(f * f * .8); ctx.lineWidth = (.6 + 4.2 * f) * s;
+        ctx.beginPath(); ctx.moveTo(X1, Y1); ctx.lineTo(X2, Y2); ctx.stroke();
+      }
+      const [X, Y] = P(cur[0], cur[1]); drawStone(X, Y, col, s, .6 + .4 * Math.sin(t * 6 + i));
+    });
+    // 3) a flash, and the stones crystallise into the NVVA gem, turning slowly in three dimensions
+    const fl = Math.exp(-Math.pow((t - T_MERGE[1]) / .22, 2));
+    if (fl > .01) glowAt(CX, CY, '#ffffff', 120 * s, .75 * fl);
+    const fk = ease((t - T_FORM) / 1.3);
+    if (fk > 0) {
+      const R = 26 * s * (.25 + .75 * fk), ay = t * .65 + (1 - fk) * 7, ax = .42 + Math.sin(t * .4) * .08, gy = CY + Math.sin(t * 1.1) * 4 * sc;
+      glowAt(CX, gy, '#b9a6ff', 110 * s, .1 * fk);
+      const top = drawWire(CX, gy, R, ay, ax, Math.min(1, fk * 1.4));
+      const ph = (t - T_FORM) % 3.4, ga = Math.exp(-Math.pow((ph - 1.3) / .16, 2)) * fk;
+      if (ga > .02) { const L = 22 * s * ga; ctx.strokeStyle = `rgba(255,255,255,${.9 * ga})`; ctx.lineWidth = 1.1;
+        ctx.beginPath(); ctx.moveTo(top[0] - L, top[1]); ctx.lineTo(top[0] + L, top[1]); ctx.moveTo(top[0], top[1] - L * 1.3); ctx.lineTo(top[0], top[1] + L * 1.3); ctx.stroke();
+        glowAt(top[0], top[1], '#ffffff', 10 * s, .8 * ga); }
+    }
+    // 4) the name
+    if (!revealed && t > T_NAME) { revealed = true; hero.classList.add('revealed'); }
+    raf = (running && !reduce) ? requestAnimationFrame(frame) : 0;
+  }
+
+  function start(fromZero) {
+    if (!ready) return;
+    cancelAnimationFrame(raf); running = true;
+    if (fromZero) { hero.classList.remove('revealed'); revealed = false; t0 = performance.now(); }
+    raf = requestAnimationFrame(frame);
+  }
+  function boot() {
+    if (ready) return; ready = true; build(); t0 = performance.now();
+    glc.hidden = true;
+    start(false);
+  }
+  if (pic.complete && pic.naturalWidth) boot(); else { pic.addEventListener('load', boot); pic.addEventListener('error', () => hero.classList.add('revealed')); }
+  let rt; addEventListener('resize', () => { if (!ready) return; clearTimeout(rt); rt = setTimeout(() => { build(); start(false); }, 150); });
+  document.getElementById('replay').addEventListener('click', () => { reduce = false; start(true); });
+  new IntersectionObserver((es) => es.forEach((e) => {
+    if (e.isIntersecting) { if (!running) start(false); } else { running = false; cancelAnimationFrame(raf); raf = 0; }
+  })).observe(hero);
+})();
+
+/* ---------------- cursor: a five-colour meteor that trails the pointer ---------------- */
+(() => {
+  // shown whenever a real mouse moves (touch never triggers it); with reduced motion it is shorter and drops no sparks
+  const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const cv = document.createElement('canvas'); cv.id = 'trail'; cv.setAttribute('aria-hidden', 'true'); document.body.appendChild(cv);
+  const ctx = cv.getContext('2d'), COLS = ['#42BBF4', '#EE354A', '#FFD52E', '#20B34B', '#8a4dff'], N = calm ? 16 : 38;
+  let W = 0, H = 0, DPR = 1, mx = -100, my = -100, raf = 0, last = 0, idle = 0, seen = false;
+  const hx = (a) => Math.round(Math.max(0, Math.min(1, a)) * 255).toString(16).padStart(2, '0');
+  // five followers, each a little lazier than the one before, so their tails weave
+  const tails = COLS.map((c, i) => ({ c, k: .3 - i * .05, x: -100, y: -100, ph: i * 1.2566, pts: [] }));
+  const sparks = [];
+  function size() { DPR = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight; cv.width = W * DPR; cv.height = H * DPR; ctx.setTransform(DPR, 0, 0, DPR, 0, 0); }
+  size(); addEventListener('resize', size);
+  addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
+    const dx = e.clientX - mx, dy = e.clientY - my, sp = Math.hypot(dx, dy);
+    mx = e.clientX; my = e.clientY;
+    if (!seen) { seen = true; tails.forEach((t) => { t.x = mx; t.y = my; }); }
+    if (!calm && sp > 14 && sparks.length < 90) for (let n = 0; n < Math.min(3, sp / 18); n++)
+      sparks.push({ x: mx, y: my, vx: -dx * .04 + (Math.random() - .5) * 1.6, vy: -dy * .04 + (Math.random() - .5) * 1.6 + .2, life: 1, c: COLS[(Math.random() * 5) | 0], r: .8 + Math.random() * 1.4 });
+    idle = 0; if (!raf) { last = performance.now(); raf = requestAnimationFrame(tick); }
+  }, { passive: true });
+  document.addEventListener('mouseleave', () => { seen = false; });
+  function tick(now) {
+    const dt = Math.min(.05, (now - last) / 1000); last = now; idle += dt;
+    ctx.clearRect(0, 0, W, H); ctx.globalCompositeOperation = 'lighter'; ctx.lineCap = 'butt'; ctx.lineJoin = 'round';
+    let alive = false;
+    tails.forEach((t, i) => {
+      t.x += (mx - t.x) * t.k; t.y += (my - t.y) * t.k;
+      const wob = 7 * Math.min(1, Math.hypot(mx - t.x, my - t.y) / 50), a = now / 140 + t.ph;
+      t.pts.unshift([t.x + Math.cos(a) * wob, t.y + Math.sin(a) * wob]); if (t.pts.length > N) t.pts.pop();
+      if (idle > .12) t.pts.pop();                                  // the tail shortens once the pointer rests
+      for (let j = 1; j < t.pts.length; j++) {
+        const f = 1 - j / N; if (f <= 0) break;
+        ctx.strokeStyle = t.c + hx(f * f * .8); ctx.lineWidth = .5 + 4 * f * f;
+        ctx.beginPath(); ctx.moveTo(t.pts[j - 1][0], t.pts[j - 1][1]); ctx.lineTo(t.pts[j][0], t.pts[j][1]); ctx.stroke();
+      }
+      if (t.pts.length > 1) alive = true;
+    });
+    // the meteor's head
+    if (alive) { const g = ctx.createRadialGradient(mx, my, 0, mx, my, 12); g.addColorStop(0, 'rgba(255,255,255,.85)'); g.addColorStop(.35, 'rgba(210,195,255,.35)'); g.addColorStop(1, 'rgba(210,195,255,0)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(mx, my, 12, 0, 6.283); ctx.fill(); }
+    for (let i = sparks.length - 1; i >= 0; i--) { const p = sparks[i]; p.x += p.vx; p.y += p.vy; p.vy += .03; p.vx *= .97; p.life -= dt * 1.6;
+      if (p.life <= 0) { sparks.splice(i, 1); continue; } alive = true;
+      ctx.fillStyle = p.c + hx(p.life * .9); ctx.beginPath(); ctx.arc(p.x, p.y, p.r * p.life, 0, 6.283); ctx.fill(); }
+    raf = alive || idle < .12 ? requestAnimationFrame(tick) : 0;
+    if (!raf) ctx.clearRect(0, 0, W, H);
+  }
+})();
+
+/* ---------------- navigation: follows the page, highlights the section in view, back to top ---------------- */
+(() => {
+  // a refresh always starts at the top (with the opening animation); a shared link to a section still opens that section
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  const navType = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0] || {}).type;
+  const deep = document.getElementById(location.hash.slice(1));
+  if (deep && deep.tagName === 'SECTION' && navType !== 'reload') requestAnimationFrame(() => deep.scrollIntoView({ behavior: 'instant' }));
+  else scrollTo({ top: 0, behavior: 'instant' });
+  // in-page links scroll without leaving a #fragment in the address
+  document.querySelectorAll('a[href^="#"]').forEach((a) => a.addEventListener('click', (e) => {
+    const t = document.getElementById(a.getAttribute('href').slice(1)); if (!t) return;
+    e.preventDefault(); t.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  }));
+  const bar = document.querySelector('.bar'), up = document.getElementById('toTop'), menu = document.getElementById('menuBtn');
+  const onScroll = () => { const y = scrollY; bar.classList.toggle('scrolled', y > 40); up.classList.toggle('show', y > innerHeight * 1.1); };
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
+  up.addEventListener('click', () => scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
+  const close = () => { bar.classList.remove('open'); menu.setAttribute('aria-expanded', 'false'); };
+  menu.addEventListener('click', (e) => { e.stopPropagation(); menu.setAttribute('aria-expanded', String(bar.classList.toggle('open'))); });
+  document.addEventListener('click', (e) => { if (!bar.contains(e.target)) close(); });
+  addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+  const links = [...document.querySelectorAll('#navLinks a')], byId = new Map(links.map((a) => [a.getAttribute('href').slice(1), a]));
+  links.forEach((a) => a.addEventListener('click', close));
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (!e.isIntersecting) return; links.forEach((l) => l.classList.remove('on')); byId.get(e.target.id).classList.add('on'); }), { rootMargin: '-40% 0px -55% 0px' });
+  byId.forEach((a, id) => { const s = document.getElementById(id); if (s) io.observe(s); });
+})();
+</script>
+</body>
+</html>
